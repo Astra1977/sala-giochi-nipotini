@@ -100,6 +100,9 @@ function renderHome(){
   for(const game of games){
     const b=button(grid,'',()=>openGame(game.id,game.name),'gameCard illustratedHotspot');b.dataset.game=game.id;b.setAttribute('aria-label',game.name);
     const [x,y,w,h]=coords[game.tile];Object.assign(b.style,{left:x/1536*100+'%',top:y/1024*100+'%',width:w/1536*100+'%',height:h/1024*100+'%'});
+    // Reuse the existing illustrated tile on mobile; home.png itself stays untouched.
+    b.style.setProperty('--thumb-size',(1536/w*100)+'% '+(1024/h*100)+'%');
+    b.style.setProperty('--thumb-position',(x/(1536-w)*100)+'% '+(y/(1024-h)*100)+'%');
     const name=document.createElement('span');name.textContent=(saved.includes(game.id)?'♥ ':'')+game.name;b.append(name);
     if(game.id==='orchestra'||game.id==='tetris'){b.classList.add('newGame');const art=document.createElement('span');art.className='newArt '+game.id;art.setAttribute('aria-hidden','true');if(game.id==='orchestra')art.textContent='♫';else for(let i=0;i<7;i++)art.append(document.createElement('i'));b.append(art)}
   }
