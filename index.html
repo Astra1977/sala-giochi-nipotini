@@ -20,20 +20,27 @@ header{display:flex;align-items:center;justify-content:space-between;gap:8px}h1{
  #home{display:none}
  #mobileHome{display:block;padding-bottom:env(safe-area-inset-bottom)}
  .mobileHero{width:100%;aspect-ratio:1536/465;background:url('home.png') top center/100% auto no-repeat}
+ #mobileHome{min-height:100dvh;display:flex;flex-direction:column;background:linear-gradient(180deg,#0879bb,#07508b)}
+ .mobileGrid{flex:1;align-content:start}
+ .mobileNav{margin-top:auto;position:sticky;bottom:0;z-index:2;padding-bottom:max(10px,env(safe-area-inset-bottom))}
  .mobileGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;padding:6px}
  .mobileGame{border:2px solid #ffdb65;border-radius:11px;aspect-ratio:250/200;background-image:url('home.png');background-repeat:no-repeat;box-shadow:0 3px 6px #003c69;min-width:0}
  .mobileNav{display:flex;justify-content:space-around;gap:5px;padding:8px 4px 15px;background:#744016}
- .mobileNav button{font-size:12px;font-weight:800;border:0;border-radius:9px;background:#ffd35a;color:#422500;padding:9px 5px;flex:1}
+ .mobileNav button{font-size:clamp(10px,2.6vw,15px);font-weight:800;border:0;border-radius:9px;background:#ffd35a;color:#422500;padding:10px 3px;flex:1}
+ @media(max-width:390px){.mobileGrid{gap:4px;padding:4px}.mobileGame{border-width:1.5px}}
  #modal{padding:5px}.panel{border-width:2px;min-height:95dvh;padding:8px}
  #play{min-height:58dvh}
  header h1{font-size:19px}header .btn{padding:9px 7px;font-size:12px}
 }
 
 .avatarTarget{width:68px;height:68px;object-fit:cover;border-radius:50%;border:4px solid #ffdb50;background:#fff;pointer-events:none}
-.runnerRicky{position:absolute;left:15%;bottom:23%;width:65px;height:94px;z-index:3;transform-origin:bottom center;pointer-events:none}
-.runnerRicky .head{position:absolute;top:0;left:14px;width:48px;height:48px;border-radius:50%;border:2px solid white;object-fit:cover}
-.runnerRicky .body{position:absolute;top:42px;left:23px;width:27px;height:30px;background:white;border-radius:12px 12px 5px 5px;transform:rotate(14deg)}
-.runnerRicky .legs{position:absolute;top:68px;left:15px;font-size:24px;line-height:1}
+ .runnerRicky{position:absolute;left:13%;bottom:23%;width:53px;height:79px;z-index:3;transform-origin:bottom center;pointer-events:none}
+.runnerRicky .head{position:absolute;top:4px;left:12px;width:35px;height:35px;border-radius:50%;border:2px solid #fff;object-fit:cover;transform:scaleX(-1);z-index:4}
+.runnerRicky .tuft{position:absolute;top:-5px;left:26px;font-size:21px;transform:rotate(18deg);z-index:5;line-height:1}
+.runnerRicky .body{position:absolute;top:36px;left:18px;width:25px;height:24px;background:#fff;border:1px solid #b5d7e9;border-radius:11px 10px 5px 5px;transform:rotate(-13deg)}
+.runnerRicky .shorts{position:absolute;top:55px;left:19px;width:25px;height:12px;background:#8cda23;border-radius:2px 2px 5px 5px}
+.runnerRicky .legs{position:absolute;top:62px;left:5px;font-size:18px;letter-spacing:-8px;white-space:nowrap;line-height:1;transform:scaleX(-1)}
+.runnerRicky .arm{position:absolute;top:40px;left:39px;width:18px;height:7px;background:#f1b07f;border-radius:8px;transform:rotate(-24deg)}
 #fruitField{height:clamp(340px,60dvh,560px);position:relative;overflow:hidden;touch-action:none;background:linear-gradient(#43c9f7,#0b7d9e 72%,#165b3a);border-radius:18px;user-select:none}
 .fruitItem{position:absolute;display:grid;place-items:center;border:0;background:transparent;font-size:clamp(44px,10vw,70px);width:76px;height:76px;touch-action:none;user-select:none}
 #slashCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
@@ -122,7 +129,7 @@ function render(k){
  if(k==='fruit'){
   let remaining=35,active=true,items=[],lastPointer=null,trail=[];
   info('🍉 Punti: 0 · ⏱ 35 s');
-  tip.textContent='Scorri il dito attraverso la frutta per tagliarla! Evita le bombe 💣 (−20).';
+  tip.textContent='Scorri il dito per tagliare la frutta! Lanci bassi, medi e alti: segui la traiettoria. Evita le bombe 💣 (−20).';
   const field=document.createElement('div');field.id='fruitField';play.append(field);
   const canvas=document.createElement('canvas');canvas.id='slashCanvas';field.append(canvas);
   const ctx=canvas.getContext('2d');
@@ -133,9 +140,12 @@ function render(k){
     if(!active)return;
     const bomb=Math.random()<.16;
     const b=document.createElement('div');b.className='fruitItem';b.textContent=bomb?'💣':['🍉','🍎','🍍','🍊','🍓','🥝'][Math.floor(rand(0,6))];
-    const x=rand(8,Math.max(9,field.clientWidth-84)),y=field.clientHeight+20;
+    const x=rand(8,Math.max(9,field.clientWidth-84)),y=field.clientHeight+12;
     b.style.left=x+'px';b.style.top=y+'px';field.append(b);
-    items.push({b,x,y,vx:rand(-30,30),vy:rand(-520,-380),age:0,bomb,hit:false});
+    const gravity=920;
+    const targetHeight=rand(field.clientHeight*.35,field.clientHeight*.91);
+    const launchVelocity=-Math.sqrt(2*gravity*targetHeight);
+    items.push({b,x,y,vx:rand(-65,65),vy:launchVelocity,gravity,age:0,bomb,hit:false});
   }
   function slice(obj){
     if(obj.hit||!active)return;
@@ -164,8 +174,8 @@ function render(k){
   function tick(now){
     if(!active)return;
     const dt=Math.min(.05,(now-prev)/1000);prev=now;spawnTime+=dt;
-    if(spawnTime>.48){spawnTime=0;addFruit()}
-    items.forEach(o=>{if(o.hit)return;o.age+=dt;o.vy+=900*dt;o.x+=o.vx*dt;o.y+=o.vy*dt;o.b.style.left=o.x+'px';o.b.style.top=o.y+'px'});
+    if(spawnTime>rand(.43,.65)){spawnTime=0;addFruit();if(Math.random()<.23)addFruit()}
+    items.forEach(o=>{if(o.hit)return;o.age+=dt;o.vy+=o.gravity*dt;o.x+=o.vx*dt;o.y+=o.vy*dt;o.b.style.left=o.x+'px';o.b.style.top=o.y+'px'});
     items=items.filter(o=>{if(o.hit||o.y>field.clientHeight+90){if(!o.hit)o.b.remove();return false}return true});
     ctx.clearRect(0,0,canvas.width,canvas.height);ctx.lineWidth=7;ctx.lineCap='round';ctx.strokeStyle='#fff5a2';
     trail.forEach(t=>{ctx.globalAlpha=t.life/.18;ctx.beginPath();ctx.moveTo(t.a.x,t.a.y);ctx.lineTo(t.b.x,t.b.y);ctx.stroke();t.life-=dt});
@@ -181,7 +191,7 @@ function render(k){
  if(k==='memory'){const symbols=['🐼','🦁','🐧','🦊','🐱','🐸'];let cards=[...symbols,...symbols].sort(()=>Math.random()-.5),open=[],matched=0,moves=0,locked=false;const grid=document.createElement('div');grid.className='grid';play.append(grid);info('Trova le 6 coppie!');cards.forEach((s,i)=>{let b=document.createElement('button');b.className='tile';b.textContent='❓';b.onclick=()=>{if(locked||b.classList.contains('matched')||open.some(o=>o.b===b))return;b.textContent=s;open.push({b,s});if(open.length===2){moves++;if(open[0].s===open[1].s){open.forEach(o=>o.b.classList.add('matched'));matched++;open=[];if(matched===6){info('🏆 Completato in '+moves+' tentativi!');best('memory',Math.max(1,100-moves*3))}}else{locked=true;let pending=open.slice();open=[];let t=setTimeout(()=>{pending.forEach(o=>o.b.textContent='❓');locked=false},750);let prev=cleanup;cleanup=()=>{prev();clearTimeout(t)}}}};grid.append(b)});return}
  if(k==='runner'){
  let active=true,elapsed=0,scoreNow=0,jumpUntil=0,obstacles=[],last=0,frame=0;
- play.innerHTML='<div class="runner" style="height:320px;position:relative;overflow:hidden"><div class="runnerRicky"><img class="head" src="ricky.png" alt="Ricky"><span class="body"></span><span class="legs">👟👟</span></div><div id="obLayer"></div><div style="position:absolute;bottom:0;width:100%;height:23%;background:repeating-linear-gradient(90deg,#7bba42 0 32px,#85c64b 32px 64px)"></div></div>';
+ play.innerHTML='<div class="runner" style="height:320px;position:relative;overflow:hidden"><div class="runnerRicky"><img class="head" src="ricky.png" alt="Ricky"><span class="tuft">〰</span><span class="body"></span><span class="arm"></span><span class="shorts"></span><span class="legs">👟👟</span></div><div id="obLayer"></div><div style="position:absolute;bottom:0;width:100%;height:23%;background:repeating-linear-gradient(90deg,#7bba42 0 32px,#85c64b 32px 64px)"></div></div>';
  const field=play.querySelector('.runner'),hero=play.querySelector('.runnerRicky'),layer=play.querySelector('#obLayer');
  const jump=()=>{if(!active)return;const now=performance.now();if(now>jumpUntil-220)jumpUntil=now+720};
  makeButton('⬆ SALTA!',jump);
@@ -204,11 +214,11 @@ function render(k){
    spawnAt=elapsed+rand(.85,1.55)*Math.max(.65,1-elapsed/180);
   }
   const speed=175+Math.min(200,elapsed*4);
-  const heroX=field.clientWidth*.15+20;
+  const heroX=field.clientWidth*.13+27;
   obstacles.forEach(o=>{
    o.x-=speed*dt;o.el.style.left=o.x+'px';
    if(!o.passed&&o.x<heroX-45){o.passed=true;scoreNow+=Math.round(o.size/10);info('⭐ '+scoreNow+' · Velocità '+Math.round(speed))}
-   if(Math.abs(o.x-heroX)<(o.size*.32+12)&&lift<o.size*.75){
+   if(Math.abs(o.x-heroX)<(o.size*.32+13)&&lift<o.size*.70){
     active=false;best('runner',scoreNow);info('💥 Ops! '+scoreNow+' punti · Record '+score('runner'));tip.textContent='Riprova: cambia dimensione e ritmo degli ostacoli!';
    }
   });
