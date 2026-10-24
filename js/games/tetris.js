@@ -35,7 +35,12 @@ export function tetris(ctx){
   });
   const loseFocus=()=>{if(engine.state==='playing'){paused=true;pause.textContent='Riprendi';repeatAction=null;update()}};
   ctx.listen(window,'blur',loseFocus);ctx.listen(document,'visibilitychange',()=>{if(document.hidden)loseFocus()});
-  function block(g,x,y,size,color){g.fillStyle=color;g.fillRect(x+1,y+1,size-2,size-2);g.fillStyle='#ffffff55';g.fillRect(x+3,y+3,size-6,3)}
+  // Visual finish only: the engine, coordinates and touch/keyboard actions stay unchanged.
+  function block(g,x,y,size,color){
+    const shine=g.createLinearGradient(x,y,x,y+size);shine.addColorStop(0,'#ffffff');shine.addColorStop(.12,color);shine.addColorStop(.75,color);shine.addColorStop(1,'#12384f');
+    g.fillStyle=shine;g.beginPath();if(g.roundRect)g.roundRect(x+1,y+1,size-2,size-2,Math.max(2,size*.12));else g.rect(x+1,y+1,size-2,size-2);g.fill();
+    g.strokeStyle='#ffffff66';g.lineWidth=1;g.stroke();g.fillStyle='#ffffff44';g.fillRect(x+4,y+4,size-8,2);
+  }
   ctx.frames(dt=>{
     if(!paused&&engine.state==='playing'){
       elapsed+=dt*1000;if(elapsed>=engine.interval){elapsed=0;engine.down();update()}

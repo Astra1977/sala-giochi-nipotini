@@ -1,0 +1,27 @@
+{
+  "fixtureHome": false,
+  "checks": [
+    "All 40 local assets cached at /sala-giochi-nipotini/, including new engines and Biscotto SVG",
+    "All twelve V8 games open, restart and close at five viewport sizes; illustrated home screenshots at mobile, tablet, desktop",
+    "Legacy scores migrate to version 8; retired scores preserved but absent from active records",
+    "Dialog focus, Tab containment and Escape preserved",
+    "All five Memory paths complete, unlock sequentially and earn exactly five permanent Biscottini",
+    "Town five measurable missions, final medal only after both hospital pickup and beach delivery",
+    "Forest five zones, including final return to start, verified through map movement",
+    "Five progressively larger mazes completed through keyboard paths",
+    "Five timed Chameleon challenges award medals on correct answers only",
+    "All five original Orchestra songs completed with timed native taps and persisted medals",
+    "Tetris touch controls, pause/resume, focus loss and top-out work; score alone never earns a medal",
+    "Basketball still scores from native swipe and physics",
+    "Cucaracha mission rewards verified captures after timer completion",
+    "Runner survival milestone is earned by surviving the real obstacle course",
+    "Fruit mission verifies sliced fruit, bomb limit and combo through native swipes",
+    "Andrea original checkpoint engine awards Biscottini from actual checkpoint events",
+    "Rewards, numerical scores and favorites persist through reload",
+    "User-controlled cache upgrade preserves V8 progress and removes old cache",
+    "All twelve games and every asset reopen with network disabled",
+    "No JavaScript runtime errors and no external resource requests",
+    "Incomplete precache never activates or claims offline availability",
+    "Browser process closure/reopening preserves rewards and new games offline"
+  ]
+}

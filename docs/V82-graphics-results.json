@@ -1,0 +1,12 @@
+{
+  "checks": [
+    "Internal responsive splash visible during real startup, then dismissed on app/image readiness without a fixed minimum",
+    "PWA manifest, favicon/apple links and real icon dimensions; 192/512 normal and Android maskable variants",
+    "Single CSS-cropped original banner and one 12-button illustrated grid at 360/390/430/768/1280; no overflow or duplicate tiles",
+    "Banner settings/records are real buttons and the real Install button handles an offered install prompt",
+    "Splash, new graphics and all twelve games reopen offline; every precached resource is available",
+    "No JavaScript runtime errors in startup, layout and styled games",
+    "Safety timeout fails open at 8 seconds; reduced motion disables loader movement"
+  ],
+  "assets": 40
+}

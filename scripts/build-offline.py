@@ -12,7 +12,7 @@ parser.add_argument('--allow-missing-home', action='store_true',
                     help='Only for preparing a patch when the original binary is unavailable.')
 args = parser.parse_args()
 assets = ['index.html', 'manifest.webmanifest', 'home.png', 'bea.png', 'biscotto.png', 'ricky.png']
-for folder in ['css', 'js', 'icons']:
+for folder in ['css', 'js', 'icons', 'assets']:
     assets.extend(p.relative_to(ROOT).as_posix() for p in sorted((ROOT / folder).rglob('*')) if p.is_file())
 version = hashlib.sha256()
 for name in assets:

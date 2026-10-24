@@ -97,22 +97,24 @@ function renderCollection(){
 function renderHome(){
   const grid=document.getElementById('gameGrid'),saved=favorites();grid.replaceChildren();
   const coords=[[24,470,250,199],[283,470,248,199],[537,470,244,199],[787,470,225,199],[1018,470,238,199],[1261,470,251,199],[24,686,250,200],[283,686,248,200],[537,686,234,200],[775,686,237,200],[1018,686,237,200],[1261,686,251,200]];
-  for(const game of games){
+  const order=['town','car','roach','runner','forest','fruit','memory','ball','orchestra','tetris','maze','chameleon'];
+  for(const id of order){
+    const game=games.find(g=>g.id===id);
     const b=button(grid,'',()=>openGame(game.id,game.name),'gameCard illustratedHotspot');b.dataset.game=game.id;b.setAttribute('aria-label',game.name);
-    const [x,y,w,h]=coords[game.tile];Object.assign(b.style,{left:x/1536*100+'%',top:y/1024*100+'%',width:w/1536*100+'%',height:h/1024*100+'%'});
+    const [x,y,w,h]=coords[game.tile];
     // Reuse the existing illustrated tile on mobile; home.png itself stays untouched.
     b.style.setProperty('--thumb-size',(1536/w*100)+'% '+(1024/h*100)+'%');
     b.style.setProperty('--thumb-position',(x/(1536-w)*100)+'% '+(y/(1024-h)*100)+'%');
     const name=document.createElement('span');name.textContent=(saved.includes(game.id)?'♥ ':'')+game.name;b.append(name);
-    if(game.id==='orchestra'||game.id==='tetris'){b.classList.add('newGame');const art=document.createElement('span');art.className='newArt '+game.id;art.setAttribute('aria-hidden','true');if(game.id==='orchestra')art.textContent='♫';else for(let i=0;i<7;i++)art.append(document.createElement('i'));b.append(art)}
+    if(game.id==='orchestra'||game.id==='tetris'){b.classList.add('newGame');const art=document.createElement('img');art.className='tileIllustration';art.src='./assets/'+game.id+'.webp';art.alt='';art.width=640;art.height=512;b.append(art)}
   }
   renderCollection();
 }
-const panorama=document.querySelector('.panorama');
-for(const [id,direction] of [['panLeft',-1],['panRight',1]])document.getElementById(id).onclick=()=>panorama.scrollBy({left:direction*Math.max(200,panorama.clientWidth-30),behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
 back.onclick=closeGame;
 restart.onclick=()=>{if(current){const id=current.id;reset();render(id);restart.focus()}};
 document.querySelectorAll('.homeNav [data-go]').forEach(b=>b.onclick=()=>openGame(b.dataset.go,b.textContent));
+document.getElementById('bannerSettings').onclick=()=>openGame('settings','Impostazioni');
+document.getElementById('bannerRecords').onclick=()=>openGame('records','Record');
 window.addEventListener('keydown',e=>{
   if(!current)return;
   if(e.key==='Escape'){e.preventDefault();closeGame();return}
@@ -123,3 +125,5 @@ window.addEventListener('keydown',e=>{
   else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus()}
 });
 renderHome();
+window.salaReady=true;
+document.dispatchEvent(new Event('sala:ready'));
