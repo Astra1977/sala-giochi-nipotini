@@ -1,333 +1,48 @@
 <!doctype html>
-<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#07396a"><title>La Nostra Sala Giochi</title>
-<style>
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(#0877bd,#063b65);font-family:system-ui,Arial,sans-serif;color:white}button{font:inherit;cursor:pointer;touch-action:manipulation}
-#home{position:relative;width:min(100vw,calc(100dvh * 1.5));margin:auto;aspect-ratio:3/2;background:url('home.png') center/100% 100% no-repeat}
-.hot{position:absolute;background:transparent;border:0;border-radius:14px} .hot:focus-visible{outline:4px solid #fff000;background:#ffffff33}.hot:active{background:#ffffff44}
-#modal{position:fixed;inset:0;background:#031c35ee;display:none;z-index:3;overflow:auto;padding:15px}#modal.show{display:block}
-.panel{max-width:680px;margin:0 auto;background:linear-gradient(155deg,#087dbd,#0b3978 70%,#092959);border:4px solid #ffcf48;border-radius:25px;padding:15px;box-shadow:0 12px 35px #0008,inset 0 2px #ffffff3b;text-align:center;min-height: min(580px,90dvh)}
-header{display:flex;align-items:center;justify-content:space-between;gap:8px}h1{font-size:clamp(20px,5vw,32px);margin:5px}h2{font-size:20px}p{line-height:1.4}.btn{background:linear-gradient(#ffe57c,#ffbd16);border:0;border-radius:14px;padding:12px 18px;color:#3e2700;font-weight:800;margin:5px;box-shadow:0 4px #ad7316}.btn:active{transform:translateY(3px);box-shadow:none}.close{background:#ff6e70;color:#fff;box-shadow:none}
-#play{position:relative;min-height:330px;border-radius:17px;background:linear-gradient(#7de2ff,#4ebeea);overflow:hidden;color:#123;touch-action:manipulation;padding:8px}
-#status{min-height:34px;font-size:18px;font-weight:bold}.target{position:absolute;font-size:62px;border:0;background:transparent;transform:translate(-50%,-50%);filter:drop-shadow(0 4px 2px #0005)}.target:active{scale:.9}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px auto;max-width:430px}.tile{font-size:36px;min-height:73px;border-radius:12px;background:white;border:2px solid #f3b933}.tile.matched{background:#a1f1a1}.runner{height:230px;background:linear-gradient(#79d9ff 70%,#51bf54 70%);position:relative;overflow:hidden}.hero,.obstacle{position:absolute;bottom:25%;font-size:50px}.hero{left:15%}.obstacle{right:0}.tiny{font-size:13px;opacity:.9}#records{white-space:pre-line;text-align:left;max-width:360px;margin:auto}
-@media (max-width:650px){.panel{padding:9px}.grid{gap:5px}.tile{min-height:60px;font-size:30px}#play{min-height:300px}}
-
-/* Schermata verticale: banner e tessere ricostruiti dalla STESSA immagine originale */
-#mobileHome{display:none}
-@media(orientation:portrait) and (max-width:800px){
- body{min-height:100dvh;background:linear-gradient(180deg,#0097d4,#025284)}
- #home{display:none}
- #mobileHome{display:block;padding-bottom:env(safe-area-inset-bottom)}
- .mobileHero{width:100%;aspect-ratio:1536/465;background:url('home.png') top center/100% auto no-repeat}
- #mobileHome{min-height:100dvh;display:flex;flex-direction:column;background:linear-gradient(180deg,#0879bb,#07508b)}
- .mobileGrid{flex:1;align-content:start}
- .mobileNav{margin-top:auto;position:sticky;bottom:0;z-index:2;padding-bottom:max(10px,env(safe-area-inset-bottom))}
- .mobileGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;padding:6px}
- .mobileGame{border:2px solid #ffdb65;border-radius:11px;aspect-ratio:250/200;background-image:url('home.png');background-repeat:no-repeat;box-shadow:0 3px 6px #003c69;min-width:0}
- .mobileNav{display:flex;justify-content:space-around;gap:5px;padding:8px 4px 15px;background:#744016}
- .mobileNav button{font-size:clamp(10px,2.6vw,15px);font-weight:800;border:0;border-radius:9px;background:#ffd35a;color:#422500;padding:10px 3px;flex:1}
- @media(max-width:390px){.mobileGrid{gap:4px;padding:4px}.mobileGame{border-width:1.5px}}
- #modal{padding:5px}.panel{border-width:2px;min-height:95dvh;padding:8px}
- #play{min-height:58dvh}
- header h1{font-size:19px}header .btn{padding:9px 7px;font-size:12px}
-}
-
-.avatarTarget{width:68px;height:68px;object-fit:cover;border-radius:50%;border:4px solid #ffdb50;background:#fff;pointer-events:none}
- /* Biscotto corre e salta: corpo intero, niente collage umano */
-.runnerRicky{position:absolute;left:12%;bottom:23%;width:82px;height:70px;z-index:3;transform-origin:bottom center;pointer-events:none;filter:drop-shadow(0 3px 2px #1238)}
-.runnerRicky svg{display:block;width:100%;height:100%;overflow:visible}
-.gameBoard{position:relative;min-height:330px;border-radius:16px;background:linear-gradient(#75d9fa,#b1f3dd);padding:12px;color:#10324c;overflow:hidden}
-.gameBoard button{touch-action:manipulation}
-.gameRow{display:flex;flex-wrap:wrap;justify-content:center;gap:9px;margin:14px auto}
-.gameChoice{border:3px solid #fff7a6;background:#fff9db;border-radius:16px;padding:12px;min-width:75px;min-height:75px;font-size:34px;box-shadow:0 4px #b68c2c}
-.gameChoice:active{transform:scale(.94)}
-.mazeGrid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;max-width:400px;margin:15px auto}
-.mazeGrid div{aspect-ratio:1;display:grid;place-items:center;border-radius:5px;background:#fff6ce;font-size:clamp(18px,5vw,32px)}
-.mazeGrid .wall{background:#246a57}
-#fruitField{height:clamp(340px,60dvh,560px);position:relative;overflow:hidden;touch-action:none;background:linear-gradient(#43c9f7,#0b7d9e 72%,#165b3a);border-radius:18px;user-select:none}
-.fruitItem{position:absolute;display:grid;place-items:center;border:0;background:transparent;font-size:clamp(44px,10vw,70px);width:76px;height:76px;touch-action:none;user-select:none}
-#slashCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-</style></head>
-<body><main id="home" aria-label="La Nostra Sala Giochi, seleziona un gioco"></main>
-<section id="mobileHome" aria-label="Sala giochi mobile"><div class="mobileHero"></div><div class="mobileGrid" id="mobileGrid"></div><nav class="mobileNav"><button data-go="records">⭐ Record</button><button data-go="records">🏆 Classifica</button><button data-go="home">🏠 Home</button><button data-go="profile">🙂 Profilo</button></nav></section><div id="modal" role="dialog" aria-modal="true" aria-label="Gioco"><section class="panel"><header><button class="btn close" id="back">⌂ HOME</button><h1 id="title">Gioco</h1><button class="btn" id="restart">↻ Riprova</button></header><p id="status"></p><div id="play"></div><p class="tiny" id="tip"></p></section></div>
-<script>
-'use strict';
-const games=[
-['Mini Town','town'],['La Macchina','car'],['Acchiappa la Cucaracha','roach'],['Salta la Cacca','runner'],['Avventura Foresta','forest'],['Consegna il Bebè','baby'],
-['Taglia la Frutta','fruit'],['Memory','memory'],['Palla nel Cesto','ball'],['Bolle Colorate','bubbles'],['Labirinto','maze'],['Chameleon','chameleon']
-];
-const home=document.getElementById('home'),modal=document.getElementById('modal'),play=document.getElementById('play'),status=document.getElementById('status'),tip=document.getElementById('tip');
-let current=null,cleanup=()=>{},points=0;
-const coords=[ [24,470,250,199],[283,470,248,199],[537,470,244,199],[787,470,225,199],[1018,470,238,199],[1261,470,251,199],
-[24,686,250,200],[283,686,248,200],[537,686,234,200],[775,686,237,200],[1018,686,237,200],[1261,686,251,200] ];
-function hotspot(label,x,y,w,h,cb){const b=document.createElement('button');b.className='hot';b.setAttribute('aria-label',label);Object.assign(b.style,{left:x/1536*100+'%',top:y/1024*100+'%',width:w/1536*100+'%',height:h/1024*100+'%'});b.onclick=cb;home.append(b)}
-games.forEach((g,i)=>hotspot(g[0],...coords[i],()=>openGame(g[1],g[0])));
-const mobileGrid=document.getElementById('mobileGrid');
-games.forEach((g,i)=>{
- const [x,y,w,h]=coords[i],b=document.createElement('button');
- b.className='mobileGame';b.setAttribute('aria-label',g[0]);
- b.style.backgroundSize=(1536/w*100)+'% '+(1024/h*100)+'%';
- b.style.backgroundPosition=(x/(1536-w)*100)+'% '+(y/(1024-h)*100)+'%';
- b.onclick=()=>openGame(g[1],g[0]);mobileGrid.append(b);
-});
-document.querySelectorAll('.mobileNav button').forEach(b=>b.onclick=()=>{
- if(b.dataset.go!=='home')openGame(b.dataset.go,b.textContent);
- else window.scrollTo({top:0,behavior:'smooth'});
-});
-
-hotspot('I miei record',190,904,208,112,()=>openGame('records','I miei record'));
-hotspot('Classifica',430,904,210,112,()=>openGame('records','Classifica'));
-hotspot('Profilo',894,904,220,112,()=>openGame('profile','Profilo'));
-hotspot('Giochi preferiti',1140,904,270,112,()=>openGame('favorites','Giochi preferiti'));
-hotspot('Impostazioni',10,10,100,100,()=>openGame('settings','Impostazioni'));
-hotspot('Trofei',1245,10,110,100,()=>openGame('records','Trofei'));
-function best(k,v){try{const old=Number(localStorage.getItem('best_'+k)||0);if(v>old)localStorage.setItem('best_'+k,v)}catch(e){}}
-function score(k){try{return Number(localStorage.getItem('best_'+k)||0)}catch(e){return 0}}
-function reset(){cleanup();cleanup=()=>{};play.replaceChildren();status.textContent='';tip.textContent='';points=0}
-function openGame(k,title){reset();current=k;document.getElementById('title').textContent=title;modal.classList.add('show');render(k)}
-function closeGame(){reset();modal.classList.remove('show');current=null}
-document.getElementById('back').onclick=closeGame;
-document.getElementById('restart').onclick=()=>{if(current){reset();render(current)}};
-function info(message){status.textContent=message}
-function makeButton(text,fn){let b=document.createElement('button');b.className='btn';b.textContent=text;b.onclick=fn;play.append(b);return b}
-function rand(a,b){return a+Math.random()*(b-a)}
-function spawnEmoji(emoji,fn,size=60){const b=document.createElement('button');b.className='target';b.textContent=emoji;b.style.fontSize=size+'px';b.style.left=rand(14,85)+'%';b.style.top=rand(17,80)+'%';b.onclick=()=>fn(b);play.append(b);return b}
-function render(k){
- if(k==='roach'){
- let remaining=35,active=true,bossHits=0,combo=0;
- info('⏱ 35 s · Punti: 0 · Boss: 0/5');
- tip.textContent='🪳 +10 · 🪳👑 boss 5 colpi · Ricky/Bea −15 · Biscotto −30!';
- const field=document.createElement('div');field.style.cssText='position:relative;height:340px;background:radial-gradient(circle at center,#c3ff8c,#41a76b);border-radius:18px;overflow:hidden';play.append(field);
- const update=()=>info('⏱ '+remaining+' s · ⭐ '+points+' · Boss '+bossHits+'/5 · Combo '+combo);
- function spawn(){
-  if(!active)return;
-  const roll=Math.random(),type=roll<.27?'decoy':roll<.45?'boss':'roach';
-  const b=document.createElement('button');b.className='target';
-  b.style.fontSize=(type==='boss'?65:49)+'px';
-  const decoy=type==='decoy'?['ricky','bea','biscotto'][Math.floor(Math.random()*3)]:null;
-  if(decoy){const pic=document.createElement('img');pic.src=decoy+'.png';pic.className='avatarTarget';pic.alt=decoy;b.append(pic)}
-  else b.textContent='🪳';
-  b.style.left=rand(12,87)+'%';b.style.top=rand(17,82)+'%';
-  b.setAttribute('aria-label',decoy?'Non colpire '+decoy:type==='boss'?'Cucaracha boss':'Cucaracha');
-  field.append(b);
-  let removed=false;
-  const remove=()=>{if(!removed){removed=true;b.remove()}};
-  const ttl=setTimeout(remove,type==='boss'?1550:Math.max(550,1250-(35-remaining)*16));
-  b.onclick=()=>{
-   if(removed||!active)return;
-   clearTimeout(ttl);remove();
-   if(type==='decoy'){points=Math.max(0,points-(decoy==='biscotto'?30:15));combo=0;field.style.background='#ff9b9b';setTimeout(()=>field.style.background='',180)}
-   else if(type==='boss'){bossHits++;points+=20;combo++;if(bossHits===5){points+=100;tip.textContent='🏆 Boss sconfitto! Bonus +100! Continua fino allo scadere.'}}
-   else {combo++;points+=10+(combo>=3?5:0)}
-   update();
-  };
- }
- const sp=setInterval(spawn,560),clock=setInterval(()=>{
-  remaining--;update();
-  if(remaining<=0){active=false;clearInterval(sp);clearInterval(clock);field.replaceChildren();best('roach',points);info('🏁 Fine! '+points+' punti · Record '+score('roach'));tip.textContent=bossHits===5?'Hai sconfitto il boss! 🏆':'Riprova per sconfiggere il boss!'}
- },1000);
- spawn();cleanup=()=>{active=false;clearInterval(sp);clearInterval(clock)};
- return;
- }
- if(k==='fruit'){
-  let remaining=35,active=true,items=[],lastPointer=null,trail=[];
-  info('🍉 Punti: 0 · ⏱ 35 s');
-  tip.textContent='Scorri il dito per tagliare la frutta! Lanci bassi, medi e alti: segui la traiettoria. Evita le bombe 💣 (−20).';
-  const field=document.createElement('div');field.id='fruitField';play.append(field);
-  const canvas=document.createElement('canvas');canvas.id='slashCanvas';field.append(canvas);
-  const ctx=canvas.getContext('2d');
-  const resize=()=>{canvas.width=field.clientWidth;canvas.height=field.clientHeight};
-  resize();window.addEventListener('resize',resize);
-  function update(){info('🍉 Punti: '+points+' · ⏱ '+remaining+' s')}
-  function addFruit(){
-    if(!active)return;
-    const bomb=Math.random()<.16;
-    const b=document.createElement('div');b.className='fruitItem';b.textContent=bomb?'💣':['🍉','🍎','🍍','🍊','🍓','🥝'][Math.floor(rand(0,6))];
-    const x=rand(8,Math.max(9,field.clientWidth-84)),y=field.clientHeight+12;
-    b.style.left=x+'px';b.style.top=y+'px';field.append(b);
-    const gravity=920;
-    const targetHeight=rand(field.clientHeight*.35,field.clientHeight*.91);
-    const launchVelocity=-Math.sqrt(2*gravity*targetHeight);
-    items.push({b,x,y,vx:rand(-65,65),vy:launchVelocity,gravity,age:0,bomb,hit:false});
-  }
-  function slice(obj){
-    if(obj.hit||!active)return;
-    obj.hit=true;points+=obj.bomb?-20:10;
-    if(points<0)points=0;
-    obj.b.textContent=obj.bomb?'💥':'✨';obj.b.style.transform='scale(1.35)';
-    setTimeout(()=>obj.b.remove(),180);update();
-  }
-  function local(e){const r=field.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
-  function intersect(a,b,c,r){
-    const vx=b.x-a.x,vy=b.y-a.y,wx=c.x-a.x,wy=c.y-a.y;
-    const t=Math.max(0,Math.min(1,(wx*vx+wy*vy)/(vx*vx+vy*vy||1)));
-    return Math.hypot(a.x+vx*t-c.x,a.y+vy*t-c.y)<r;
-  }
-  const down=e=>{e.preventDefault();field.setPointerCapture(e.pointerId);lastPointer=local(e)};
-  const move=e=>{
-    if(!lastPointer||!active)return;
-    e.preventDefault();const p=local(e);
-    items.forEach(o=>{if(!o.hit&&intersect(lastPointer,p,{x:o.x+38,y:o.y+38},35))slice(o)});
-    trail.push({a:lastPointer,b:p,life:0.18});lastPointer=p;
-  };
-  const up=()=>lastPointer=null;
-  field.addEventListener('pointerdown',down);field.addEventListener('pointermove',move);
-  field.addEventListener('pointerup',up);field.addEventListener('pointercancel',up);
-  let prev=performance.now(),frame=0,spawnTime=0;
-  function tick(now){
-    if(!active)return;
-    const dt=Math.min(.05,(now-prev)/1000);prev=now;spawnTime+=dt;
-    if(spawnTime>rand(.43,.65)){spawnTime=0;addFruit();if(Math.random()<.23)addFruit()}
-    items.forEach(o=>{if(o.hit)return;o.age+=dt;o.vy+=o.gravity*dt;o.x+=o.vx*dt;o.y+=o.vy*dt;o.b.style.left=o.x+'px';o.b.style.top=o.y+'px'});
-    items=items.filter(o=>{if(o.hit||o.y>field.clientHeight+90){if(!o.hit)o.b.remove();return false}return true});
-    ctx.clearRect(0,0,canvas.width,canvas.height);ctx.lineWidth=7;ctx.lineCap='round';ctx.strokeStyle='#fff5a2';
-    trail.forEach(t=>{ctx.globalAlpha=t.life/.18;ctx.beginPath();ctx.moveTo(t.a.x,t.a.y);ctx.lineTo(t.b.x,t.b.y);ctx.stroke();t.life-=dt});
-    ctx.globalAlpha=1;trail=trail.filter(t=>t.life>0);
-    frame=requestAnimationFrame(tick);
-  }
-  frame=requestAnimationFrame(tick);
-  const clock=setInterval(()=>{remaining--;update();if(remaining<=0){active=false;clearInterval(clock);cancelAnimationFrame(frame);best('fruit',points);info('🏆 Fine! '+points+' punti · Record '+score('fruit'));tip.textContent='Premi Riprova per una nuova sfida!'}},1000);
-  cleanup=()=>{active=false;clearInterval(clock);cancelAnimationFrame(frame);window.removeEventListener('resize',resize)};
-  return;
- }
- if(k==='bubbles'){let time=25,active=true;info('Punti: 0 · Tempo: 25 s');tip.textContent='Scoppia più bolle che puoi!';let interval=setInterval(()=>{time--;info('Punti: '+points+' · Tempo: '+time+' s');if(time<=0){active=false;clearInterval(interval);best(k,points);info('⏰ Fine! Punti: '+points+' · Record: '+score(k));play.replaceChildren()}},1000);cleanup=()=>clearInterval(interval);let spawner=setInterval(()=>{if(!active)return;while(play.children.length>9)play.firstElementChild.remove();spawnEmoji(['🫧','🔴','🟡','🟣','🟢'][Math.floor(rand(0,5))],b=>{if(!active)return;points++;b.remove();info('Punti: '+points+' · Tempo: '+time+' s')},45)},650);let prev=cleanup;cleanup=()=>{prev();clearInterval(spawner)};return}
- if(k==='memory'){const symbols=['🐼','🦁','🐧','🦊','🐱','🐸'];let cards=[...symbols,...symbols].sort(()=>Math.random()-.5),open=[],matched=0,moves=0,locked=false;const grid=document.createElement('div');grid.className='grid';play.append(grid);info('Trova le 6 coppie!');cards.forEach((s,i)=>{let b=document.createElement('button');b.className='tile';b.textContent='❓';b.onclick=()=>{if(locked||b.classList.contains('matched')||open.some(o=>o.b===b))return;b.textContent=s;open.push({b,s});if(open.length===2){moves++;if(open[0].s===open[1].s){open.forEach(o=>o.b.classList.add('matched'));matched++;open=[];if(matched===6){info('🏆 Completato in '+moves+' tentativi!');best('memory',Math.max(1,100-moves*3))}}else{locked=true;let pending=open.slice();open=[];let t=setTimeout(()=>{pending.forEach(o=>o.b.textContent='❓');locked=false},750);let prev=cleanup;cleanup=()=>{prev();clearTimeout(t)}}}};grid.append(b)});return}
- if(k==='runner'){
- let active=true,elapsed=0,scoreNow=0,jumpUntil=0,obstacles=[],last=0,frame=0;
- play.innerHTML='<div class="runner" style="height:320px;position:relative;overflow:hidden"><div class="runnerRicky" aria-label="Gatto grigio e bianco">
-<svg viewBox="0 0 110 92" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Gatto grigio e bianco che corre verso destra">
-<path d="M25 55 C-5 56 0 22 17 25 C24 26 23 35 17 35 C15 35 16 48 30 45" fill="none" stroke="#717986" stroke-width="10" stroke-linecap="round"/>
-<ellipse cx="47" cy="58" rx="38" ry="25" fill="#8e96a3" stroke="#444d59" stroke-width="2.5"/>
-<path d="M27 56 Q43 75 66 61 Q56 79 34 76Z" fill="#f7f8fc"/>
-<path d="M21 39 l7 11 M40 35 l5 12 M56 37 l-4 10" stroke="#636b78" stroke-width="5" stroke-linecap="round"/>
-<path d="M21 73 Q19 84 31 85 L39 85 Q43 81 36 78 M52 74 Q53 84 65 85 L72 85 Q76 80 68 76" fill="#f7f8fc" stroke="#535b66" stroke-width="2.5" stroke-linejoin="round"/>
-<path d="M61 27 L65 6 Q68 1 73 7 L84 17 L96 7 Q102 2 104 10 L106 30 Q111 46 101 55 Q85 68 69 56 Q58 47 61 27Z" fill="#8e96a3" stroke="#444d59" stroke-width="2.5"/>
-<path d="M69 17 L71 11 L79 19Z M94 18 L101 12 L102 22Z" fill="#eaa4b0"/>
-<path d="M71 40 Q83 56 100 39 L100 50 Q87 63 73 51Z" fill="#fff"/>
-<ellipse cx="81" cy="34" rx="4" ry="6" fill="#243142"/><ellipse cx="99" cy="34" rx="4" ry="6" fill="#243142"/>
-<circle cx="82" cy="32" r="1.3" fill="#fff"/><circle cx="100" cy="32" r="1.3" fill="#fff"/>
-<path d="M88 43 L94 43 L91 47Z" fill="#dc8c9b"/>
-<path d="M91 47 q-4 5 -8 0 M91 47 q4 5 8 0" fill="none" stroke="#414958" stroke-width="1.5"/>
-<path d="M75 46 l-12 -2 M76 50 l-12 3 M101 46 l8 -3 M101 50 l8 3" stroke="#f7f8fc" stroke-width="1.7" stroke-linecap="round"/>
-</svg></div><div id="obLayer"></div><div style="position:absolute;bottom:0;width:100%;height:23%;background:repeating-linear-gradient(90deg,#7bba42 0 32px,#85c64b 32px 64px)"></div></div>';
- const field=play.querySelector('.runner'),hero=play.querySelector('.runnerRicky'),layer=play.querySelector('#obLayer');
- const jump=()=>{if(!active)return;const now=performance.now();if(now>jumpUntil-220)jumpUntil=now+720};
- makeButton('⬆ SALTA!',jump);
- const tap=e=>{if(e.target.closest('.runner'))jump()};play.addEventListener('pointerdown',tap);
- const key=e=>{if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();jump()}};window.addEventListener('keydown',key);
- info('⭐ 0 · Schiva le cacche!');tip.textContent='Aiuta Biscotto a saltare! Tocca il campo o SALTA: ostacoli piccoli, grandi e velocità crescente.';
- let previous=performance.now(),spawnAt=0;
- function tick(now){
-  if(!active)return;
-  const dt=Math.min((now-previous)/1000,.05);previous=now;elapsed+=dt;
-  const jumping=now<jumpUntil;
-  const phase=jumping?1-(jumpUntil-now)/720:0;
-  const lift=jumping?Math.sin(Math.PI*phase)*125:0;
-  hero.style.transform='translateY('+(-lift)+'px)';
-  if(elapsed>spawnAt){
-   const size=[32,45,60,75][Math.floor(Math.random()*4)];
-   const obj={x:field.clientWidth+30,size,el:document.createElement('span'),passed:false};
-   obj.el.textContent='💩';obj.el.style.cssText='position:absolute;bottom:23%;font-size:'+size+'px;line-height:1;transform:translateX(-50%);z-index:2';
-   layer.append(obj.el);obstacles.push(obj);
-   spawnAt=elapsed+rand(.85,1.55)*Math.max(.65,1-elapsed/180);
-  }
-  const speed=175+Math.min(200,elapsed*4);
-  const heroX=field.clientWidth*.12+40;
-  obstacles.forEach(o=>{
-   o.x-=speed*dt;o.el.style.left=o.x+'px';
-   if(!o.passed&&o.x<heroX-45){o.passed=true;scoreNow+=Math.round(o.size/10);info('⭐ '+scoreNow+' · Velocità '+Math.round(speed))}
-   if(Math.abs(o.x-heroX)<(o.size*.32+24)&&lift<o.size*.70){
-    active=false;best('runner',scoreNow);info('💥 Ops! '+scoreNow+' punti · Record '+score('runner'));tip.textContent='Riprova: cambia dimensione e ritmo degli ostacoli!';
-   }
-  });
-  obstacles=obstacles.filter(o=>{if(o.x< -90){o.el.remove();return false}return true});
-  if(active)frame=requestAnimationFrame(tick);
- }
- frame=requestAnimationFrame(tick);
- cleanup=()=>{active=false;cancelAnimationFrame(frame);play.removeEventListener('pointerdown',tap);window.removeEventListener('keydown',key)};
- return;
- }
-
- // V5: sette giochi touch nuovi, senza dipendenze o server.
- if(['town','car','forest','baby','ball','maze','chameleon'].includes(k)){
-   const board=document.createElement('div');board.className='gameBoard';play.append(board);
-   let active=true,clock=null,raf=0;
-   const message=(t)=>{info(t)};
-   const add=(parent,txt,fn,cls='gameChoice')=>{const b=document.createElement('button');b.className=cls;b.textContent=txt;b.onclick=fn;parent.append(b);return b};
-   const row=()=>{const d=document.createElement('div');d.className='gameRow';board.append(d);return d};
-   const end=(txt)=>{active=false;best(k,points);message(txt+' · Record '+score(k));};
-   cleanup=()=>{active=false;if(clock)clearInterval(clock);cancelAnimationFrame(raf)};
-   if(k==='town'){
-     let step=0;const places=['🏠 Casa','🏫 Scuola','🏖️ Spiaggia','🏪 Negozio','🏥 Ospedale','🌳 Parco'];
-     const quests=[['Compra la merenda!','🏪 Negozio'],['Vai a giocare!','🌳 Parco'],['Torna a casa!','🏠 Casa'],['Vai a lezione!','🏫 Scuola'],['Fai un bagno!','🏖️ Spiaggia'],['Visita il dottore!','🏥 Ospedale']];
-     const title=document.createElement('h2');board.append(title);const r=row();
-     const update=()=>{title.textContent='🏘️ Mini Town · Missione '+(step+1)+'/6: '+quests[step][0];message('⭐ '+points+' · Esplora la città!')};
-     places.forEach(place=>add(r,place,()=>{if(!active)return;if(place===quests[step][1]){points+=20;step++;if(step===quests.length){title.textContent='🎉 Tutte le missioni completate!';end('🏆 Mini Town '+points+' punti')}else update()}else{points=Math.max(0,points-5);message('Posto sbagliato! −5 · ⭐ '+points)}}));
-     tip.textContent='Completa le missioni scegliendo il luogo giusto.';update();return;
-   }
-   if(k==='forest'){
-     let found=0;const objects=['🦋','🦉','🐿️','🍄','🦊','🐸','🦌','🌺'];
-     board.style.background='linear-gradient(#0c3d52,#237b50)';board.style.color='#fff';
-     const title=document.createElement('h2');board.append(title);const r=row();
-     const shuffled=[...objects].sort(()=>Math.random()-.5),target=[...objects].sort(()=>Math.random()-.5);
-     const update=()=>{title.textContent='🔦 Trova '+target[found]+' nella foresta';message('⭐ '+points+' · Trovati '+found+'/8')};
-     shuffled.forEach(o=>add(r,o,()=>{if(!active)return;if(o===target[found]){points+=15;found++;if(found===8){title.textContent='🌟 Foresta esplorata!';end('🏆 '+points+' punti')}else update()}else{points=Math.max(0,points-5);message('Non è quello! −5 · ⭐ '+points)}}));
-     tip.textContent='Trova gli animali e gli oggetti nell’ordine richiesto.';update();return;
-   }
-   if(k==='baby'){
-     let deliveries=0;const addresses=['🏠','🏡','🏘️','🏰'];
-     const title=document.createElement('h2');board.append(title);const r=row();
-     const update=()=>{const dest=addresses[deliveries%4];title.textContent='👶 Consegna il bebè alla casa '+dest+' · '+deliveries+'/10';message('⭐ '+points)};
-     addresses.forEach((a,i)=>add(r,a,()=>{if(!active)return;if(i===deliveries%4){deliveries++;points+=10;if(deliveries===10){title.textContent='👶 Tutti i bebè sono arrivati!';end('🏆 '+points+' punti')}else update()}else{points=Math.max(0,points-5);message('Casa sbagliata! −5 · ⭐ '+points)}}));
-     tip.textContent='Consegna 10 bebè nella casa indicata.';update();return;
-   }
-   if(k==='chameleon'){
-     let turns=0;const colors=[['Rosso','#ef4444'],['Verde','#22c55e'],['Blu','#3b82f6'],['Giallo','#eab308'],['Viola','#a855f7']];
-     const title=document.createElement('h2');board.append(title);const r=row();
-     let target=0;const update=()=>{target=Math.floor(Math.random()*colors.length);title.textContent='🦎 Camaleonte: tocca '+colors[target][0];message('⭐ '+points+' · Round '+turns+'/12')};
-     colors.forEach(([name,color],i)=>{const b=add(r,'●',()=>{if(!active)return;if(i===target){points+=10;turns++;if(turns===12){title.textContent='🌈 Camaleonte campione!';end('🏆 '+points+' punti')}else update()}else{points=Math.max(0,points-5);message('Colore sbagliato! −5 · ⭐ '+points)}});b.style.color=color;b.style.fontSize='54px'});
-     tip.textContent='Scegli il colore richiesto. Dodici round!';update();return;
-   }
-   if(k==='ball'){
-     let shots=0;const title=document.createElement('h2');board.append(title);
-     const hoop=document.createElement('div');hoop.style.cssText='font-size:76px;margin:20px';hoop.textContent='🏀 🥅';board.append(hoop);
-     const r=row();const update=()=>{title.textContent='🏀 Tiro '+(shots+1)+'/12 · Scegli la forza';message('⭐ '+points)};
-     [25,50,75,100].forEach(power=>add(r,power+'%',()=>{if(!active)return;const ideal=[25,50,75,100][shots%4];const hit=power===ideal;hoop.textContent=hit?'🏀✨🥅':'🏀💨🥅';if(hit)points+=20;shots++;if(shots===12){end('🏆 Canestri! '+points+' punti');title.textContent='Partita finita!'}else update()},'btn'));
-     tip.textContent='La forza giusta cambia a ogni tiro: prova a trovare il ritmo!';update();return;
-   }
-   if(k==='maze'){
-     const map=['#######','#S..#.#','#.#...#','#.#.#.#','#...#.#','###...#','#####E#'];
-     let px=1,py=1,moves=0;const grid=document.createElement('div');grid.className='mazeGrid';board.append(grid);
-     const cells=[];for(let y=0;y<7;y++)for(let x=0;x<7;x++){const d=document.createElement('div');grid.append(d);cells.push(d)}
-     const draw=()=>{for(let y=0;y<7;y++)for(let x=0;x<7;x++){const d=cells[y*7+x];d.className=map[y][x]==='#'?'wall':'';d.textContent=x===px&&y===py?'🐱':map[y][x]==='E'?'🏆':''}message('🐾 Passi: '+moves)};
-     const move=(dx,dy)=>{if(!active)return;const nx=px+dx,ny=py+dy;if(nx<0||ny<0||nx>6||ny>6||map[ny][nx]==='#')return;px=nx;py=ny;moves++;draw();if(map[py][px]==='E'){points=Math.max(10,200-moves*4);end('🏆 Labirinto risolto! '+points+' punti')}};
-     const r=row();add(r,'⬅️',()=>move(-1,0));add(r,'⬆️',()=>move(0,-1));add(r,'⬇️',()=>move(0,1));add(r,'➡️',()=>move(1,0));
-     const key=e=>{const dirs={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]};if(dirs[e.key]){e.preventDefault();move(...dirs[e.key])}};window.addEventListener('keydown',key);const old=cleanup;cleanup=()=>{old();window.removeEventListener('keydown',key)};
-     tip.textContent='Guida Biscotto fino al trofeo. Meno passi = più punti.';draw();return;
-   }
-   if(k==='car'){
-     board.style.cssText+=';background:linear-gradient(90deg,#276a41 0 12%,#555b66 12% 88%,#276a41 88%)';
-     const road=document.createElement('div');road.style.cssText='height:300px;position:relative;overflow:hidden';board.append(road);
-     const car=document.createElement('div');car.textContent='🚗';car.style.cssText='position:absolute;bottom:12px;font-size:55px;left:50%;transform:translateX(-50%);z-index:2';road.append(car);
-     let lane=1,t=0,obstacles=[],speed=110,spawn=0,previous=performance.now();
-     const setLane=(v)=>{lane=Math.max(0,Math.min(2,lane+v));car.style.left=[22,50,78][lane]+'%'};
-     const r=row();add(r,'⬅️',()=>setLane(-1));add(r,'➡️',()=>setLane(1));
-     const key=e=>{if(e.key==='ArrowLeft')setLane(-1);if(e.key==='ArrowRight')setLane(1)};window.addEventListener('keydown',key);
-     const old=cleanup;cleanup=()=>{old();window.removeEventListener('keydown',key)};
-     function tick(now){
-       if(!active)return;const dt=Math.min(.05,(now-previous)/1000);previous=now;t+=dt;spawn+=dt;speed=110+t*5;
-       if(spawn>Math.max(.65,1.4-t*.012)){spawn=0;const l=Math.floor(Math.random()*3);const el=document.createElement('div');el.textContent='🚙';el.style.cssText='position:absolute;top:-55px;font-size:43px;transform:translateX(-50%)';el.style.left=[22,50,78][l]+'%';road.append(el);obstacles.push({l,y:-55,el,passed:false})}
-       obstacles.forEach(o=>{o.y+=speed*dt;o.el.style.top=o.y+'px';if(!o.passed&&o.y>290){o.passed=true;points+=10;message('🚗 ⭐ '+points)}if(o.l===lane&&o.y>195&&o.y<272){end('💥 Incidente! '+points+' punti')}});
-       obstacles=obstacles.filter(o=>{if(o.y>330){o.el.remove();return false}return true});
-       if(active)raf=requestAnimationFrame(tick);
-     }raf=requestAnimationFrame(tick);
-     tip.textContent='Schiva le auto! Tocca le frecce per cambiare corsia. La velocità aumenta.';message('🚗 ⭐ 0');return;
-   }
- }
- if(k==='records'){info('I tuoi migliori punteggi (salvati su questo dispositivo)');let p=document.createElement('p');p.id='records';p.textContent='🪳 Cucaracha: '+score('roach')+'\n💩 Salta la Cacca: '+score('runner')+'\n🍉 Frutta: '+score('fruit')+'\n🫧 Bolle: '+score('bubbles')+'\n🧠 Memory: '+score('memory')+'\n🏘️ Mini Town: '+score('town')+'\n🚗 La Macchina: '+score('car')+'\n🌲 Foresta: '+score('forest')+'\n👶 Bebè: '+score('baby')+'\n🏀 Palla: '+score('ball')+'\n🧩 Labirinto: '+score('maze')+'\n🦎 Chameleon: '+score('chameleon');play.append(p);return}
- if(k==='settings'){info('Impostazioni');let p=document.createElement('p');p.textContent='I record sono memorizzati solo nel browser, senza account e senza inviare dati online.';play.append(p);makeButton('Cancella record locali',()=>{if(confirm('Cancellare tutti i record di questo browser?')){games.map(g=>g[1]).forEach(x=>localStorage.removeItem('best_'+x));info('Record cancellati')}});return}
- if(k==='profile'||k==='favorites'){info('Questa funzione arriverà in una prossima versione.');return}
- info('🚧 Gioco in preparazione!');tip.textContent='Questa tessera è già collegata; svilupperemo il gioco nella prossima fase.';makeButton('Torna alla sala giochi',closeGame)
-}
-</script></body></html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#07396a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Sala Giochi">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="description" content="La nostra sala giochi: piccole avventure da giocare insieme, anche offline.">
+  <title>La Nostra Sala Giochi</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/icon-192.png">
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="./css/legacy.css">
+  <link rel="stylesheet" href="./css/app.css">
+  <link rel="stylesheet" href="./css/road.css">
+  <script type="module" src="./js/app.js"></script>
+  <script type="module" src="./js/pwa.js"></script>
+</head>
+<body>
+  <main id="home" aria-labelledby="homeTitle">
+    <div class="heroArt" aria-hidden="true"><img src="./home.png" alt="" width="1536" height="1024"></div>
+    <section class="welcome">
+      <div><p class="eyebrow">UN MONDO DI PICCOLE AVVENTURE</p><h1 id="homeTitle">La nostra sala giochi</h1><p>Scegli un gioco e divertiti. I record restano su questo dispositivo.</p></div>
+      <span id="offlineState" role="status">Preparazione per giocare offline…</span>
+    </section>
+    <div id="gameGrid" class="gameGrid" aria-label="Scegli un gioco"></div>
+    <nav class="homeNav" aria-label="Sala giochi">
+      <button class="btn" data-go="records">⭐ Record</button>
+      <button class="btn" data-go="favorites">♥ Preferiti</button>
+      <button class="btn" data-go="settings">⚙ Impostazioni</button>
+      <button class="btn" id="installApp" hidden>＋ Installa</button>
+    </nav>
+    <p class="installHelp">Su iPhone e iPad: apri in Safari, tocca Condividi e scegli “Aggiungi alla schermata Home”.</p>
+    <aside id="updateNotice" hidden role="status">È pronta una nuova versione. <button class="btn" id="updateApp">Aggiorna e torna alla home</button></aside>
+    <noscript>Per giocare serve JavaScript attivo nel browser.</noscript>
+  </main>
+  <div id="modal" role="dialog" aria-modal="true" aria-labelledby="title" tabindex="-1" inert>
+    <section class="panel">
+      <header><button class="btn close" id="back">⌂ Home</button><h2 id="title">Gioco</h2><button class="btn" id="restart">↻ Riprova</button></header>
+      <p id="status" role="status" aria-live="off"></p>
+      <div id="play"></div>
+      <p class="tiny" id="tip"></p>
+    </section>
+  </div>
+</body>
+</html>

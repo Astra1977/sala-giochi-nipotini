@@ -1,0 +1,41 @@
+:root{color-scheme:light;--ink:#143650;--gold:#ffcf48}
+body{min-height:100dvh;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+button{min-height:48px;min-width:48px;-webkit-tap-highlight-color:transparent}
+button:focus-visible,select:focus-visible,a:focus-visible{outline:4px solid #ffec90;outline-offset:3px}
+button[hidden],[hidden]{display:none!important}
+#home{position:static;width:min(1120px,100%);aspect-ratio:auto;background:none;margin:auto;padding:0 16px}
+.heroArt{overflow:hidden;aspect-ratio:1536/455;border-radius:0 0 24px 24px;background:#0b6297}
+.heroArt img{display:block;width:100%;height:auto}
+.welcome{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 2px}
+.welcome h1{font-size:clamp(24px,4vw,40px);margin:0}.welcome p{margin:6px 0}.eyebrow{font-size:11px;letter-spacing:.16em;font-weight:800;color:#ffe89d}
+#offlineState{border:1px solid #91d6ee;border-radius:20px;padding:8px 13px;font-size:13px;flex-shrink:0;max-width:240px}
+.gameGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.gameCard{border:2px solid #ffdf80;border-radius:18px;padding:14px 8px;min-height:133px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;background:linear-gradient(145deg,#fffce8,#ffe9a0);color:#203b56;box-shadow:0 5px #01385e;font-weight:800}
+.gameCard .symbol{font-size:38px;line-height:1.25}.gameCard small{font-size:11px;font-weight:500}.gameCard:active{transform:translateY(3px);box-shadow:0 2px #01385e}
+.gameCard.pending{background:#e0e9ed;border-color:#c4d1d8}
+.homeNav{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;margin-top:18px}
+.installHelp{text-align:center;font-size:12px;line-height:1.5;margin:16px auto;max-width:600px}
+#updateNotice{position:fixed;z-index:8;bottom:max(12px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:min(95%,600px);padding:12px;border:2px solid var(--gold);border-radius:18px;background:#092959;box-shadow:0 5px 20px #0008}
+#modal{overscroll-behavior:contain;padding:max(12px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
+#modal.show{display:block}.panel{width:100%;min-height:0;padding:14px}.panel header{position:relative}.panel h2{font-size:clamp(17px,4vw,26px);margin:0;overflow-wrap:anywhere}
+#play{min-height:300px;padding:8px}#status{font-size:16px;min-height:24px;margin:12px 0}.tiny{line-height:1.5}
+.gameBoard{min-height:280px;padding:8px}.boardMap{display:grid;gap:1px;max-width:500px;margin:auto;touch-action:none;user-select:none;border:3px solid #235a4c;border-radius:10px;overflow:hidden;background:#40795d}
+.mapCell{aspect-ratio:1;display:grid;place-items:center;background:#d9efb1;font-size:clamp(16px,4vw,30px);line-height:1.1;min-width:0}
+.mapCell.wall{background:#37765b}.mapCell.visited{background:#f6e9a8}.mapCell.player{background:#ffec87;box-shadow:inset 0 0 0 2px #d89415}
+.mapCell.road{background:#dfd6c1}.mapCell.danger{background:#a0cee5}
+.dpad{display:grid;grid-template:repeat(2,48px)/repeat(3,56px);gap:5px;justify-content:center;margin:12px auto 4px}.dpad button{border:0;border-radius:12px;background:#fff3b2;font-size:23px;color:#174568}.dpad button:nth-child(1){grid-column:2}.dpad button:nth-child(2){grid-column:1;grid-row:2}.dpad button:nth-child(3){grid-column:2;grid-row:2}.dpad button:nth-child(4){grid-column:3;grid-row:2}
+.mission{margin:6px 0 12px;font-size:17px}.levelControls{display:flex;justify-content:center;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px}.levelControls select{font:inherit;min-height:44px;border-radius:10px;padding:6px}
+.recordList{list-style:none;padding:0;text-align:left;display:grid;gap:8px}.recordList li{display:flex;justify-content:space-between;gap:8px;padding:8px;border-bottom:1px solid #ffffff44}
+.favoriteRow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:7px 0;border-bottom:1px solid #ffffff44}
+.favoriteRow .btn{min-width:52px}.notice{max-width:460px;margin:25px auto;line-height:1.6}
+.ballCourt{display:block;width:100%;aspect-ratio:500/380;max-height:62dvh;border-radius:14px;touch-action:none;background:#aee4f9}
+.bubbleField{position:relative;height:clamp(290px,48dvh,430px);overflow:hidden;border-radius:14px;background:linear-gradient(#c1f5ff,#57bcdb);touch-action:manipulation}
+.bubble{position:absolute;width:58px;height:58px;min-width:48px;min-height:48px;border-radius:50%;border:3px solid #fff8;box-shadow:inset -8px -8px 8px #0002,inset 7px 7px 7px #fff8;color:#123;font-size:21px;padding:0;transform:translate(-50%,-50%)}
+.colorSwatch{display:block;border-radius:50%;width:clamp(80px,22vw,130px);height:clamp(80px,22vw,130px);margin:12px auto;border:6px solid white;box-shadow:0 4px #1235}
+.colorChoices{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:420px;margin:auto}.colorChoices button{border:3px solid #fff;border-radius:12px;min-height:64px;font-weight:800;font-size:14px;background:#fff6ce;color:#143650}
+.target{touch-action:manipulation}.boss{background:#fff5ad;border:3px solid #f0a900;border-radius:50%;font-size:48px!important;min-width:82px;min-height:82px}.boss small{display:block;font-size:12px;color:#102f44}
+.tile{color:#143650}.tile[aria-pressed="true"]{border-color:#25825e}.favoriteEmpty{padding:14px}
+@media(max-width:700px){.gameGrid{grid-template-columns:repeat(3,minmax(0,1fr))}.welcome{display:block;padding:14px 0}#offlineState{display:inline-block;margin-top:5px;max-width:none}.heroArt{margin:0 -10px}.gameCard{min-height:118px;padding:10px 5px;font-size:13px}.gameCard .symbol{font-size:33px}#home{padding:0 10px}.gameGrid{gap:9px}.panel{padding:8px;border-width:2px}.panel header .btn{padding:10px 8px;margin:2px;font-size:12px}#modal{padding:5px}#play{padding:5px;min-height:260px}.panel header{gap:4px}.colorChoices{gap:6px}}
+@media(max-width:350px){.gameGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(orientation:landscape) and (max-height:500px){.heroArt{display:none}.welcome{padding:8px 0}.welcome p:not(.eyebrow){display:none}.gameGrid{grid-template-columns:repeat(4,minmax(0,1fr))}.gameCard{min-height:100px}.panel{max-width:750px}.ballCourt{max-height:none;height:290px}.bubbleField{height:280px}.boardMap{max-width:330px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}.gameCard:active,.btn:active{transform:none}}
