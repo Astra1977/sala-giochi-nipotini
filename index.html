@@ -6,9 +6,9 @@
 #home{position:relative;width:min(100vw,calc(100dvh * 1.5));margin:auto;aspect-ratio:3/2;background:url('home.png') center/100% 100% no-repeat}
 .hot{position:absolute;background:transparent;border:0;border-radius:14px} .hot:focus-visible{outline:4px solid #fff000;background:#ffffff33}.hot:active{background:#ffffff44}
 #modal{position:fixed;inset:0;background:#031c35ee;display:none;z-index:3;overflow:auto;padding:15px}#modal.show{display:block}
-.panel{max-width:680px;margin:0 auto;background:linear-gradient(145deg,#0879bc,#103d8c);border:4px solid #ffcf48;border-radius:25px;padding:15px;box-shadow:0 12px 35px #0008;text-align:center;min-height: min(580px,90dvh)}
-header{display:flex;align-items:center;justify-content:space-between;gap:8px}h1{font-size:clamp(20px,5vw,32px);margin:5px}h2{font-size:20px}p{line-height:1.4}.btn{background:#ffcd35;border:0;border-radius:14px;padding:12px 18px;color:#3e2700;font-weight:800;margin:5px;box-shadow:0 4px #ad7316}.btn:active{transform:translateY(3px);box-shadow:none}.close{background:#ff6e70;color:#fff;box-shadow:none}
-#play{position:relative;min-height:330px;border-radius:17px;background:#8ae2ff;overflow:hidden;color:#123;touch-action:manipulation;padding:8px}
+.panel{max-width:680px;margin:0 auto;background:linear-gradient(155deg,#087dbd,#0b3978 70%,#092959);border:4px solid #ffcf48;border-radius:25px;padding:15px;box-shadow:0 12px 35px #0008,inset 0 2px #ffffff3b;text-align:center;min-height: min(580px,90dvh)}
+header{display:flex;align-items:center;justify-content:space-between;gap:8px}h1{font-size:clamp(20px,5vw,32px);margin:5px}h2{font-size:20px}p{line-height:1.4}.btn{background:linear-gradient(#ffe57c,#ffbd16);border:0;border-radius:14px;padding:12px 18px;color:#3e2700;font-weight:800;margin:5px;box-shadow:0 4px #ad7316}.btn:active{transform:translateY(3px);box-shadow:none}.close{background:#ff6e70;color:#fff;box-shadow:none}
+#play{position:relative;min-height:330px;border-radius:17px;background:linear-gradient(#7de2ff,#4ebeea);overflow:hidden;color:#123;touch-action:manipulation;padding:8px}
 #status{min-height:34px;font-size:18px;font-weight:bold}.target{position:absolute;font-size:62px;border:0;background:transparent;transform:translate(-50%,-50%);filter:drop-shadow(0 4px 2px #0005)}.target:active{scale:.9}
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px auto;max-width:430px}.tile{font-size:36px;min-height:73px;border-radius:12px;background:white;border:2px solid #f3b933}.tile.matched{background:#a1f1a1}.runner{height:230px;background:linear-gradient(#79d9ff 70%,#51bf54 70%);position:relative;overflow:hidden}.hero,.obstacle{position:absolute;bottom:25%;font-size:50px}.hero{left:15%}.obstacle{right:0}.tiny{font-size:13px;opacity:.9}#records{white-space:pre-line;text-align:left;max-width:360px;margin:auto}
 @media (max-width:650px){.panel{padding:9px}.grid{gap:5px}.tile{min-height:60px;font-size:30px}#play{min-height:300px}}
@@ -34,13 +34,20 @@ header{display:flex;align-items:center;justify-content:space-between;gap:8px}h1{
 }
 
 .avatarTarget{width:68px;height:68px;object-fit:cover;border-radius:50%;border:4px solid #ffdb50;background:#fff;pointer-events:none}
- .runnerRicky{position:absolute;left:13%;bottom:23%;width:53px;height:79px;z-index:3;transform-origin:bottom center;pointer-events:none}
-.runnerRicky .head{position:absolute;top:4px;left:12px;width:35px;height:35px;border-radius:50%;border:2px solid #fff;object-fit:cover;transform:scaleX(-1);z-index:4}
-.runnerRicky .tuft{position:absolute;top:-5px;left:26px;font-size:21px;transform:rotate(18deg);z-index:5;line-height:1}
-.runnerRicky .body{position:absolute;top:36px;left:18px;width:25px;height:24px;background:#fff;border:1px solid #b5d7e9;border-radius:11px 10px 5px 5px;transform:rotate(-13deg)}
-.runnerRicky .shorts{position:absolute;top:55px;left:19px;width:25px;height:12px;background:#8cda23;border-radius:2px 2px 5px 5px}
-.runnerRicky .legs{position:absolute;top:62px;left:5px;font-size:18px;letter-spacing:-8px;white-space:nowrap;line-height:1;transform:scaleX(-1)}
-.runnerRicky .arm{position:absolute;top:40px;left:39px;width:18px;height:7px;background:#f1b07f;border-radius:8px;transform:rotate(-24deg)}
+ /* Biscotto corre e salta: corpo intero, niente collage umano */
+.runnerRicky{position:absolute;left:12%;bottom:23%;width:76px;height:66px;z-index:3;transform-origin:bottom center;pointer-events:none}
+.runnerRicky .catBody{position:absolute;bottom:0;left:0;width:76px;height:57px;border-radius:48% 50% 36% 38%;background:repeating-linear-gradient(115deg,#60616d 0 10px,#333640 10px 17px,#898993 17px 24px);border:3px solid #262b3c;box-shadow:inset -9px -7px #343743}
+.runnerRicky .catHead{position:absolute;left:35px;top:-4px;width:46px;height:46px;border-radius:50%;object-fit:cover;border:3px solid #fff0b6;z-index:2}
+.runnerRicky .tail{position:absolute;left:-15px;top:12px;font-size:31px;color:#555761;transform:rotate(-35deg)}
+.runnerRicky .paw{position:absolute;bottom:-4px;left:12px;font-size:18px;letter-spacing:8px}
+.gameBoard{position:relative;min-height:330px;border-radius:16px;background:linear-gradient(#75d9fa,#b1f3dd);padding:12px;color:#10324c;overflow:hidden}
+.gameBoard button{touch-action:manipulation}
+.gameRow{display:flex;flex-wrap:wrap;justify-content:center;gap:9px;margin:14px auto}
+.gameChoice{border:3px solid #fff7a6;background:#fff9db;border-radius:16px;padding:12px;min-width:75px;min-height:75px;font-size:34px;box-shadow:0 4px #b68c2c}
+.gameChoice:active{transform:scale(.94)}
+.mazeGrid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;max-width:400px;margin:15px auto}
+.mazeGrid div{aspect-ratio:1;display:grid;place-items:center;border-radius:5px;background:#fff6ce;font-size:clamp(18px,5vw,32px)}
+.mazeGrid .wall{background:#246a57}
 #fruitField{height:clamp(340px,60dvh,560px);position:relative;overflow:hidden;touch-action:none;background:linear-gradient(#43c9f7,#0b7d9e 72%,#165b3a);border-radius:18px;user-select:none}
 .fruitItem{position:absolute;display:grid;place-items:center;border:0;background:transparent;font-size:clamp(44px,10vw,70px);width:76px;height:76px;touch-action:none;user-select:none}
 #slashCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
@@ -191,13 +198,13 @@ function render(k){
  if(k==='memory'){const symbols=['🐼','🦁','🐧','🦊','🐱','🐸'];let cards=[...symbols,...symbols].sort(()=>Math.random()-.5),open=[],matched=0,moves=0,locked=false;const grid=document.createElement('div');grid.className='grid';play.append(grid);info('Trova le 6 coppie!');cards.forEach((s,i)=>{let b=document.createElement('button');b.className='tile';b.textContent='❓';b.onclick=()=>{if(locked||b.classList.contains('matched')||open.some(o=>o.b===b))return;b.textContent=s;open.push({b,s});if(open.length===2){moves++;if(open[0].s===open[1].s){open.forEach(o=>o.b.classList.add('matched'));matched++;open=[];if(matched===6){info('🏆 Completato in '+moves+' tentativi!');best('memory',Math.max(1,100-moves*3))}}else{locked=true;let pending=open.slice();open=[];let t=setTimeout(()=>{pending.forEach(o=>o.b.textContent='❓');locked=false},750);let prev=cleanup;cleanup=()=>{prev();clearTimeout(t)}}}};grid.append(b)});return}
  if(k==='runner'){
  let active=true,elapsed=0,scoreNow=0,jumpUntil=0,obstacles=[],last=0,frame=0;
- play.innerHTML='<div class="runner" style="height:320px;position:relative;overflow:hidden"><div class="runnerRicky"><img class="head" src="ricky.png" alt="Ricky"><span class="tuft">〰</span><span class="body"></span><span class="arm"></span><span class="shorts"></span><span class="legs">👟👟</span></div><div id="obLayer"></div><div style="position:absolute;bottom:0;width:100%;height:23%;background:repeating-linear-gradient(90deg,#7bba42 0 32px,#85c64b 32px 64px)"></div></div>';
+ play.innerHTML='<div class="runner" style="height:320px;position:relative;overflow:hidden"><div class="runnerRicky" aria-label="Biscotto il gatto"><span class="tail">〰</span><span class="catBody"></span><img class="catHead" src="biscotto.png" alt="Biscotto"><span class="paw">🐾</span></div><div id="obLayer"></div><div style="position:absolute;bottom:0;width:100%;height:23%;background:repeating-linear-gradient(90deg,#7bba42 0 32px,#85c64b 32px 64px)"></div></div>';
  const field=play.querySelector('.runner'),hero=play.querySelector('.runnerRicky'),layer=play.querySelector('#obLayer');
  const jump=()=>{if(!active)return;const now=performance.now();if(now>jumpUntil-220)jumpUntil=now+720};
  makeButton('⬆ SALTA!',jump);
  const tap=e=>{if(e.target.closest('.runner'))jump()};play.addEventListener('pointerdown',tap);
  const key=e=>{if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();jump()}};window.addEventListener('keydown',key);
- info('⭐ 0 · Schiva le cacche!');tip.textContent='Tocca il campo o SALTA. Cacche piccole, grandi e doppie; velocità crescente.';
+ info('⭐ 0 · Schiva le cacche!');tip.textContent='Aiuta Biscotto a saltare! Tocca il campo o SALTA: ostacoli piccoli, grandi e velocità crescente.';
  let previous=performance.now(),spawnAt=0;
  function tick(now){
   if(!active)return;
@@ -214,11 +221,11 @@ function render(k){
    spawnAt=elapsed+rand(.85,1.55)*Math.max(.65,1-elapsed/180);
   }
   const speed=175+Math.min(200,elapsed*4);
-  const heroX=field.clientWidth*.13+27;
+  const heroX=field.clientWidth*.12+40;
   obstacles.forEach(o=>{
    o.x-=speed*dt;o.el.style.left=o.x+'px';
    if(!o.passed&&o.x<heroX-45){o.passed=true;scoreNow+=Math.round(o.size/10);info('⭐ '+scoreNow+' · Velocità '+Math.round(speed))}
-   if(Math.abs(o.x-heroX)<(o.size*.32+13)&&lift<o.size*.70){
+   if(Math.abs(o.x-heroX)<(o.size*.32+24)&&lift<o.size*.70){
     active=false;best('runner',scoreNow);info('💥 Ops! '+scoreNow+' punti · Record '+score('runner'));tip.textContent='Riprova: cambia dimensione e ritmo degli ostacoli!';
    }
   });
@@ -229,8 +236,85 @@ function render(k){
  cleanup=()=>{active=false;cancelAnimationFrame(frame);play.removeEventListener('pointerdown',tap);window.removeEventListener('keydown',key)};
  return;
  }
- if(k==='records'){info('I tuoi migliori punteggi (salvati su questo dispositivo)');let p=document.createElement('p');p.id='records';p.textContent='🪳 Cucaracha: '+score('roach')+'\n💩 Salta la Cacca: '+score('runner')+'\n🍉 Frutta: '+score('fruit')+'\n🫧 Bolle: '+score('bubbles')+'\n🧠 Memory: '+score('memory');play.append(p);return}
- if(k==='settings'){info('Impostazioni');let p=document.createElement('p');p.textContent='I record sono memorizzati solo nel browser, senza account e senza inviare dati online.';play.append(p);makeButton('Cancella record locali',()=>{if(confirm('Cancellare tutti i record di questo browser?')){['roach','runner','fruit','bubbles','memory'].forEach(x=>localStorage.removeItem('best_'+x));info('Record cancellati')}});return}
+
+ // V5: sette giochi touch nuovi, senza dipendenze o server.
+ if(['town','car','forest','baby','ball','maze','chameleon'].includes(k)){
+   const board=document.createElement('div');board.className='gameBoard';play.append(board);
+   let active=true,clock=null,raf=0;
+   const message=(t)=>{info(t)};
+   const add=(parent,txt,fn,cls='gameChoice')=>{const b=document.createElement('button');b.className=cls;b.textContent=txt;b.onclick=fn;parent.append(b);return b};
+   const row=()=>{const d=document.createElement('div');d.className='gameRow';board.append(d);return d};
+   const end=(txt)=>{active=false;best(k,points);message(txt+' · Record '+score(k));};
+   cleanup=()=>{active=false;if(clock)clearInterval(clock);cancelAnimationFrame(raf)};
+   if(k==='town'){
+     let step=0;const places=['🏠 Casa','🏫 Scuola','🏖️ Spiaggia','🏪 Negozio','🏥 Ospedale','🌳 Parco'];
+     const quests=[['Compra la merenda!','🏪 Negozio'],['Vai a giocare!','🌳 Parco'],['Torna a casa!','🏠 Casa'],['Vai a lezione!','🏫 Scuola'],['Fai un bagno!','🏖️ Spiaggia'],['Visita il dottore!','🏥 Ospedale']];
+     const title=document.createElement('h2');board.append(title);const r=row();
+     const update=()=>{title.textContent='🏘️ Mini Town · Missione '+(step+1)+'/6: '+quests[step][0];message('⭐ '+points+' · Esplora la città!')};
+     places.forEach(place=>add(r,place,()=>{if(!active)return;if(place===quests[step][1]){points+=20;step++;if(step===quests.length){title.textContent='🎉 Tutte le missioni completate!';end('🏆 Mini Town '+points+' punti')}else update()}else{points=Math.max(0,points-5);message('Posto sbagliato! −5 · ⭐ '+points)}}));
+     tip.textContent='Completa le missioni scegliendo il luogo giusto.';update();return;
+   }
+   if(k==='forest'){
+     let found=0;const objects=['🦋','🦉','🐿️','🍄','🦊','🐸','🦌','🌺'];
+     board.style.background='linear-gradient(#0c3d52,#237b50)';board.style.color='#fff';
+     const title=document.createElement('h2');board.append(title);const r=row();
+     const shuffled=[...objects].sort(()=>Math.random()-.5),target=[...objects].sort(()=>Math.random()-.5);
+     const update=()=>{title.textContent='🔦 Trova '+target[found]+' nella foresta';message('⭐ '+points+' · Trovati '+found+'/8')};
+     shuffled.forEach(o=>add(r,o,()=>{if(!active)return;if(o===target[found]){points+=15;found++;if(found===8){title.textContent='🌟 Foresta esplorata!';end('🏆 '+points+' punti')}else update()}else{points=Math.max(0,points-5);message('Non è quello! −5 · ⭐ '+points)}}));
+     tip.textContent='Trova gli animali e gli oggetti nell’ordine richiesto.';update();return;
+   }
+   if(k==='baby'){
+     let deliveries=0;const addresses=['🏠','🏡','🏘️','🏰'];
+     const title=document.createElement('h2');board.append(title);const r=row();
+     const update=()=>{const dest=addresses[deliveries%4];title.textContent='👶 Consegna il bebè alla casa '+dest+' · '+deliveries+'/10';message('⭐ '+points)};
+     addresses.forEach((a,i)=>add(r,a,()=>{if(!active)return;if(i===deliveries%4){deliveries++;points+=10;if(deliveries===10){title.textContent='👶 Tutti i bebè sono arrivati!';end('🏆 '+points+' punti')}else update()}else{points=Math.max(0,points-5);message('Casa sbagliata! −5 · ⭐ '+points)}}));
+     tip.textContent='Consegna 10 bebè nella casa indicata.';update();return;
+   }
+   if(k==='chameleon'){
+     let turns=0;const colors=[['Rosso','#ef4444'],['Verde','#22c55e'],['Blu','#3b82f6'],['Giallo','#eab308'],['Viola','#a855f7']];
+     const title=document.createElement('h2');board.append(title);const r=row();
+     let target=0;const update=()=>{target=Math.floor(Math.random()*colors.length);title.textContent='🦎 Camaleonte: tocca '+colors[target][0];message('⭐ '+points+' · Round '+turns+'/12')};
+     colors.forEach(([name,color],i)=>{const b=add(r,'●',()=>{if(!active)return;if(i===target){points+=10;turns++;if(turns===12){title.textContent='🌈 Camaleonte campione!';end('🏆 '+points+' punti')}else update()}else{points=Math.max(0,points-5);message('Colore sbagliato! −5 · ⭐ '+points)}});b.style.color=color;b.style.fontSize='54px'});
+     tip.textContent='Scegli il colore richiesto. Dodici round!';update();return;
+   }
+   if(k==='ball'){
+     let shots=0;const title=document.createElement('h2');board.append(title);
+     const hoop=document.createElement('div');hoop.style.cssText='font-size:76px;margin:20px';hoop.textContent='🏀 🥅';board.append(hoop);
+     const r=row();const update=()=>{title.textContent='🏀 Tiro '+(shots+1)+'/12 · Scegli la forza';message('⭐ '+points)};
+     [25,50,75,100].forEach(power=>add(r,power+'%',()=>{if(!active)return;const ideal=[25,50,75,100][shots%4];const hit=power===ideal;hoop.textContent=hit?'🏀✨🥅':'🏀💨🥅';if(hit)points+=20;shots++;if(shots===12){end('🏆 Canestri! '+points+' punti');title.textContent='Partita finita!'}else update()},'btn'));
+     tip.textContent='La forza giusta cambia a ogni tiro: prova a trovare il ritmo!';update();return;
+   }
+   if(k==='maze'){
+     const map=['#######','#S..#.#','#.#...#','#.#.#.#','#...#.#','###...#','#####E#'];
+     let px=1,py=1,moves=0;const grid=document.createElement('div');grid.className='mazeGrid';board.append(grid);
+     const cells=[];for(let y=0;y<7;y++)for(let x=0;x<7;x++){const d=document.createElement('div');grid.append(d);cells.push(d)}
+     const draw=()=>{for(let y=0;y<7;y++)for(let x=0;x<7;x++){const d=cells[y*7+x];d.className=map[y][x]==='#'?'wall':'';d.textContent=x===px&&y===py?'🐱':map[y][x]==='E'?'🏆':''}message('🐾 Passi: '+moves)};
+     const move=(dx,dy)=>{if(!active)return;const nx=px+dx,ny=py+dy;if(nx<0||ny<0||nx>6||ny>6||map[ny][nx]==='#')return;px=nx;py=ny;moves++;draw();if(map[py][px]==='E'){points=Math.max(10,200-moves*4);end('🏆 Labirinto risolto! '+points+' punti')}};
+     const r=row();add(r,'⬅️',()=>move(-1,0));add(r,'⬆️',()=>move(0,-1));add(r,'⬇️',()=>move(0,1));add(r,'➡️',()=>move(1,0));
+     const key=e=>{const dirs={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]};if(dirs[e.key]){e.preventDefault();move(...dirs[e.key])}};window.addEventListener('keydown',key);const old=cleanup;cleanup=()=>{old();window.removeEventListener('keydown',key)};
+     tip.textContent='Guida Biscotto fino al trofeo. Meno passi = più punti.';draw();return;
+   }
+   if(k==='car'){
+     board.style.cssText+=';background:linear-gradient(90deg,#276a41 0 12%,#555b66 12% 88%,#276a41 88%)';
+     const road=document.createElement('div');road.style.cssText='height:300px;position:relative;overflow:hidden';board.append(road);
+     const car=document.createElement('div');car.textContent='🚗';car.style.cssText='position:absolute;bottom:12px;font-size:55px;left:50%;transform:translateX(-50%);z-index:2';road.append(car);
+     let lane=1,t=0,obstacles=[],speed=110,spawn=0,previous=performance.now();
+     const setLane=(v)=>{lane=Math.max(0,Math.min(2,lane+v));car.style.left=[22,50,78][lane]+'%'};
+     const r=row();add(r,'⬅️',()=>setLane(-1));add(r,'➡️',()=>setLane(1));
+     const key=e=>{if(e.key==='ArrowLeft')setLane(-1);if(e.key==='ArrowRight')setLane(1)};window.addEventListener('keydown',key);
+     const old=cleanup;cleanup=()=>{old();window.removeEventListener('keydown',key)};
+     function tick(now){
+       if(!active)return;const dt=Math.min(.05,(now-previous)/1000);previous=now;t+=dt;spawn+=dt;speed=110+t*5;
+       if(spawn>Math.max(.65,1.4-t*.012)){spawn=0;const l=Math.floor(Math.random()*3);const el=document.createElement('div');el.textContent='🚙';el.style.cssText='position:absolute;top:-55px;font-size:43px;transform:translateX(-50%)';el.style.left=[22,50,78][l]+'%';road.append(el);obstacles.push({l,y:-55,el,passed:false})}
+       obstacles.forEach(o=>{o.y+=speed*dt;o.el.style.top=o.y+'px';if(!o.passed&&o.y>290){o.passed=true;points+=10;message('🚗 ⭐ '+points)}if(o.l===lane&&o.y>195&&o.y<272){end('💥 Incidente! '+points+' punti')}});
+       obstacles=obstacles.filter(o=>{if(o.y>330){o.el.remove();return false}return true});
+       if(active)raf=requestAnimationFrame(tick);
+     }raf=requestAnimationFrame(tick);
+     tip.textContent='Schiva le auto! Tocca le frecce per cambiare corsia. La velocità aumenta.';message('🚗 ⭐ 0');return;
+   }
+ }
+ if(k==='records'){info('I tuoi migliori punteggi (salvati su questo dispositivo)');let p=document.createElement('p');p.id='records';p.textContent='🪳 Cucaracha: '+score('roach')+'\n💩 Salta la Cacca: '+score('runner')+'\n🍉 Frutta: '+score('fruit')+'\n🫧 Bolle: '+score('bubbles')+'\n🧠 Memory: '+score('memory')+'\n🏘️ Mini Town: '+score('town')+'\n🚗 La Macchina: '+score('car')+'\n🌲 Foresta: '+score('forest')+'\n👶 Bebè: '+score('baby')+'\n🏀 Palla: '+score('ball')+'\n🧩 Labirinto: '+score('maze')+'\n🦎 Chameleon: '+score('chameleon');play.append(p);return}
+ if(k==='settings'){info('Impostazioni');let p=document.createElement('p');p.textContent='I record sono memorizzati solo nel browser, senza account e senza inviare dati online.';play.append(p);makeButton('Cancella record locali',()=>{if(confirm('Cancellare tutti i record di questo browser?')){games.map(g=>g[1]).forEach(x=>localStorage.removeItem('best_'+x));info('Record cancellati')}});return}
  if(k==='profile'||k==='favorites'){info('Questa funzione arriverà in una prossima versione.');return}
  info('🚧 Gioco in preparazione!');tip.textContent='Questa tessera è già collegata; svilupperemo il gioco nella prossima fase.';makeButton('Torna alla sala giochi',closeGame)
 }
