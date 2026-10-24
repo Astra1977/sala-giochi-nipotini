@@ -1,0 +1,27 @@
+body{background:linear-gradient(180deg,#067da0,#064c6d 70%,#07394f)}
+#home{width:min(1250px,100%);padding:0 14px}.welcome{padding:12px 0}.welcome h1{font-size:clamp(23px,3.3vw,35px)}
+.panoramaGuide{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px}.panoramaGuide p{margin:5px 0}.panoramaGuide>div{display:flex}
+.panorama{width:100%;overflow-x:auto;overscroll-behavior-x:contain;border:3px solid #e7be6c;border-radius:18px;box-shadow:0 7px 24px #001c3b66;scrollbar-color:#eac576 #145b77;background:#1c7e94}
+.illustratedScene{position:relative;width:100%;min-width:900px;aspect-ratio:1536/1024}
+.illustratedScene>img{display:block;width:100%;height:auto;pointer-events:none;user-select:none}
+#gameGrid{position:absolute;inset:0}
+.gameCard.illustratedHotspot{position:absolute;display:block;padding:0;min-height:0;min-width:0;border:0;border-radius:12px;background:transparent;box-shadow:none;color:white;overflow:hidden;font-size:clamp(12px,1.5vw,20px);text-shadow:0 2px 2px #102234}
+.illustratedHotspot>span:first-child{position:absolute;inset:0 0 auto;height:37%;display:flex;align-items:center;justify-content:center;padding:3px 6px;background:linear-gradient(#123d56,#185d75);border:2px solid #efce87;border-radius:11px 11px 0 0;line-height:1.05;font-weight:850}
+.gameCard.illustratedHotspot:active{transform:none;box-shadow:inset 0 0 0 5px #fff5b2}.gameCard.illustratedHotspot:focus-visible{outline:5px solid #fff5b2;outline-offset:-5px}
+.illustratedHotspot.newGame{background:radial-gradient(ellipse at 45% 60%,#67c6af,#1e798d 75%);border:3px solid #f3ce82}
+.illustratedHotspot.newGame>span:first-child{height:38%;border:0;background:#164f69}
+.illustratedHotspot .newArt{position:absolute;inset:40% 8% 4%;display:grid;place-content:center;color:#ffecb2}
+.newArt.orchestra{font:800 clamp(44px,7vw,88px) Georgia,serif;text-shadow:3px 4px #23596b;transform:rotate(-8deg)}
+.newArt.tetris{grid-template:repeat(3,22px)/repeat(4,22px);gap:3px}.newArt.tetris i{display:block;border:2px solid #fff9;border-radius:3px;background:#f7b94c}.newArt.tetris i:nth-child(2n){background:#d27ee2}.newArt.tetris i:nth-child(3n){background:#72c9ee}.newArt.tetris i:nth-child(1){grid-column:2}.newArt.tetris i:nth-child(5){grid-column:2}
+#collectionHome{display:flex;justify-content:center;align-items:center;gap:9px;font-weight:750;font-size:18px;margin:18px 0 8px}#collectionHome img{width:36px;height:36px}
+.homeNav{margin:8px 0;gap:8px}.homeNav .btn{background:linear-gradient(#f4ddaa,#dbb779);color:#193a4a;box-shadow:0 4px #8b6936}
+.biscottini{display:inline-flex;gap:4px;align-items:center}.biscottini img{width:32px;height:32px}.biscottini .locked{filter:grayscale(1);opacity:.22}.pathBadges{margin:5px auto 10px}.pathGoal{font-weight:750;font-size:15px;color:#153c55;margin:5px 0 10px}
+#rewardToast{pointer-events:none;position:fixed;z-index:30;left:50%;top:max(15px,env(safe-area-inset-top));transform:translateX(-50%);padding:13px 20px;border:3px solid #ddaf5b;background:#fff5d8;color:#234558;box-shadow:0 8px 35px #001b3980;border-radius:20px;max-width:calc(100% - 20px);text-align:center;animation:biscottinoArrives .4s ease-out}
+#rewardToast p{margin:5px 0;font-weight:750}@keyframes biscottinoArrives{from{opacity:0;scale:.8}to{opacity:1;scale:1}}
+.recordList li{display:grid;grid-template-columns:1fr;gap:5px}.recordList strong{font-size:14px;font-weight:600}.recordList .biscottini img{width:34px;height:34px}
+.tetrisLayout{display:flex;gap:14px;justify-content:center;align-items:flex-start}.tetrisBoard{display:block;width:min(58%,250px);height:auto;border:3px solid #f4d598;border-radius:8px;touch-action:none}.tetrisSidebar{width:120px;font-size:14px}.tetrisSidebar canvas{width:90px;max-width:100%;height:auto}.tetrisSidebar progress{width:100%}.tetrisSidebar .btn{font-size:13px;padding:10px 6px;margin:5px 0;width:100%}
+.tetrisControls{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:10px auto;max-width:420px}.tetrisControls .btn{padding:11px 4px;margin:0;font-size:13px;min-height:52px;touch-action:none}.tetrisControls .btn:last-child{grid-column:2/4}
+.musicCanvas{display:block;width:100%;height:auto;max-height:42dvh;object-fit:contain;border-radius:13px}.musicPads{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}.musicPads button{border:3px solid #fff9;border-radius:14px;min-height:65px;color:#16344a;font-size:22px;font-weight:900;box-shadow:0 5px #173e5c}.musicPads button.played{box-shadow:inset 0 0 0 5px white;transform:translateY(3px)}.orchestraGame h3{margin:6px 0}.orchestraGame .levelControls input{width:120px;vertical-align:middle}
+@media(max-width:700px){#home{padding:0 8px}.illustratedScene{min-width:900px}.panoramaGuide{font-size:12px}.panoramaGuide .btn{margin:2px;padding:8px;min-width:44px;min-height:44px}.panoramaGuide p{max-width:250px}.welcome h1{font-size:25px}.biscottini img{width:28px;height:28px}.tetrisBoard{width:min(59%,220px)}.tetrisLayout{gap:8px}.tetrisSidebar{width:100px;font-size:12px}.newArt.tetris{grid-template:repeat(3,19px)/repeat(4,19px)}}
+@media(orientation:landscape) and (max-height:500px){.welcome{display:flex}.panoramaGuide{display:flex}.illustratedScene{min-width:900px}.tetrisBoard{width:170px}.musicCanvas{max-height:260px}}
+@media(prefers-reduced-motion:reduce){#rewardToast{animation:none}.musicPads button.played{transform:none}}

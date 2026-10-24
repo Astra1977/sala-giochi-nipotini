@@ -48,7 +48,7 @@ export function town(ctx) {
       if (!inside(x,y,9) || walls.has(x+','+y)) return {text:'🌲',className:'wall',type:'wall'};
       return {text:place?.emoji || '',className:place?'visited':'road',type:place?'place':'path'};
     });
-    label.textContent = finished ? '🎉 Hai aiutato tutta la città!' : 'Missione '+(step+1)+'/6: '+quests[step][1];
+    label.textContent = finished ? '🎉 Hai aiutato tutta la città!' : 'Missione '+Math.min(5,step+1)+'/5: '+quests[step][1];
     ctx.info('⭐ '+points+' · Passi '+moves+' · Zaino: '+(['vuoto','🥪','vuoto','⚽','vuoto','👜'][step] || 'vuoto'));
   };
   const move = (dx,dy) => {
@@ -58,6 +58,7 @@ export function town(ctx) {
     pos = next; moves++;
     if (same(pos,places[quests[step][0]])) {
       points+=20; step++;
+      if(step<=4)ctx.complete(step);else if(step===6)ctx.complete(5);
       if (step===quests.length) {
         finished=true; points+=Math.max(0,120-moves);
         ctx.best('town',points);
@@ -78,7 +79,7 @@ export function forest(ctx) {
     pos={x:1,y:1}; found=0; visited=new Set(); finished=false;
     walls=new Set(['3,2','3,3','3,4','5,4','5,5','5,6']);
     const spots=shuffle([{x:7,y:1},{x:1,y:7},{x:7,y:7},{x:4,y:7},{x:6,y:2},{x:2,y:5}]);
-    objects=spots.slice(0,level+2).map((p,i)=>({...p,emoji:['🍄','🌺','🦋','🪶','🍓'][i],collected:false}));
+    objects=spots.slice(0,level+2).map((p,i)=>({...p,emoji:['🍄','🌺','🦋','🪶','🍓','🍃'][i],collected:false}));
     map=world(ctx,root,9);
     root.insertBefore(map.grid,root.querySelector('.dpad'));
     // The swipe listeners are tied to each current map; all are removed on exit.
@@ -100,7 +101,7 @@ export function forest(ctx) {
       const object=objects.find(o=>!o.collected&&o.x===x&&o.y===y);
       return {text:object?.emoji||'·',className:'visited',type:object?'object':'path'};
     });
-    label.textContent='Livello '+level+'/3 · Cerca '+objects.filter(o=>!o.collected).map(o=>o.emoji).join(' ');
+    label.textContent=found===objects.length&&level===5?'Torna alla partenza (colonna 2, riga 2)!':'Zona '+level+'/5 · Cerca '+objects.filter(o=>!o.collected).map(o=>o.emoji).join(' ');
     ctx.info('⭐ '+points+' · Oggetti '+found+'/'+objects.length);
   };
   const move=(dx,dy)=>{
@@ -109,9 +110,9 @@ export function forest(ctx) {
     const object=objects.find(o=>!o.collected&&same(o,pos));
     if(object){object.collected=true;found++;points+=20*level}
     draw();
-    if(found===objects.length){
-      finished=true;ctx.best('forest',points);
-      if(level<3){
+    if(found===objects.length&&(level<5||pos.x===1&&pos.y===1)){
+      finished=true;ctx.best('forest',points);ctx.complete(level);
+      if(level<5){
         label.textContent='🌟 Radura esplorata!';
         const next=button(root,'Esplora la prossima radura',()=>{next.remove();level++;startLevel()});
       }else{label.textContent='🏆 Tutta la foresta esplorata!';ctx.info('⭐ '+points+' · Record '+ctx.score('forest'))}
@@ -119,46 +120,7 @@ export function forest(ctx) {
   };
   movement(ctx,root,move);
   startLevel();
-  ctx.tip.textContent='La foresta si rivela camminando. Cerca gli oggetti nascosti nelle tre radure: usa frecce o swipe.';
-}
-
-export function baby(ctx) {
-  const root=board(ctx),label=mission(root),map=world(ctx,root,9);
-  const depot={x:1,y:7}, homes=[{x:7,y:1},{x:7,y:7},{x:1,y:1}];
-  const walls=new Set(['3,3','4,3','5,3','3,5','4,5','5,5']);
-  let pos={...depot},carrying=true,deliveries=0,level=1,points=0,finished=false,moves=0,bumps=0;
-  const hazards=()=>[{x:2+(moves%(4+level)),y:2},{x:6-((moves+2)%(4+level)),y:6}];
-  const draw=()=>{
-    map.draw(pos,(x,y)=>{
-      if(!inside(x,y,9)||walls.has(x+','+y))return {text:'🌳',className:'wall',type:'wall'};
-      if(hazards().some(h=>h.x===x&&h.y===y))return {text:'🛴',className:'danger',type:'hazard'};
-      if(x===depot.x&&y===depot.y)return {text:'👶',className:'visited',type:'depot'};
-      const house=homes.findIndex(h=>h.x===x&&h.y===y);
-      return {text:house<0?'':house===deliveries%3?'🏡':'🏠',className:'road',type:house<0?'path':'home'};
-    });
-    const target=homes[deliveries%3];
-    label.textContent=carrying?'Porta il bebè alla 🏡 (colonna '+(target.x+1)+', riga '+(target.y+1)+').':'Torna a 👶 per prendere un altro bebè.';
-    ctx.info('Livello '+level+'/3 · Consegne '+deliveries+'/9 · ⭐ '+points+' · Zaino '+(carrying?'👶':'vuoto'));
-  };
-  const move=(dx,dy)=>{
-    if(finished)return;const next={x:pos.x+dx,y:pos.y+dy};
-    if(!inside(next.x,next.y,9)||walls.has(next.x+','+next.y))return;
-    const before=hazards();moves++;pos=next;
-    let bumped=before.concat(hazards()).some(h=>same(h,pos));
-    if(bumped){pos={...depot};bumps++;points=Math.max(0,points-5)}
-    if(!carrying&&same(pos,depot))carrying=true;
-    if(carrying&&same(pos,homes[deliveries%3])){
-      carrying=false;deliveries++;points+=25*level;
-      level=Math.min(3,1+Math.floor(deliveries/3));
-      ctx.best('baby',points);
-      if(deliveries===9)finished=true;
-    }
-    draw();
-    if(bumped)ctx.info('🛴 Strada occupata: riparti dal nido. −5 punti · Urti '+bumps);
-    if(finished){label.textContent='🏆 Nove bebè arrivati a casa!';ctx.info('⭐ '+points+' · Record '+ctx.score('baby'))}
-  };
-  movement(ctx,root,move,map.grid);draw();
-  ctx.tip.textContent='Percorri la città, evita gli scooter e torna al nido dopo ogni consegna. Gli scooter avanzano a ogni tuo passo.';
+  ctx.tip.textContent='La foresta si rivela camminando. Cerca gli oggetti nascosti nelle cinque radure: usa frecce o swipe.';
 }
 
 export function createMaze(size) {
@@ -179,7 +141,7 @@ export function maze(ctx) {
   let level=1,points=0,moves=0,map,view,pos,finished=false;
   const draw=()=>{
     view.draw(pos,(x,y)=>({text:map[y][x]==='E'?'🏆':'',className:map[y][x]==='#'?'wall':'visited',type:map[y][x]==='#'?'wall':map[y][x]==='E'?'exit':'path'}));
-    label.textContent='Labirinto '+level+'/3 · Raggiungi il trofeo';
+    label.textContent='Labirinto '+level+'/5 · Raggiungi il trofeo';
     ctx.info('Passi '+moves+' · ⭐ '+points);
   };
   const start=()=>{
@@ -201,12 +163,12 @@ export function maze(ctx) {
     if(!map[y]||!map[y][x]||map[y][x]==='#')return;
     pos={x,y};moves++;draw();
     if(map[y][x]==='E'){
-      finished=true;points+=Math.max(20,level*300-moves*2);ctx.best('maze',points);
+      finished=true;points+=Math.max(20,level*300-moves*2);ctx.best('maze',points);ctx.complete(level);
       label.textContent='🏆 Uscita trovata in '+moves+' passi!';
-      if(level<3){const next=button(root,'Prossimo labirinto',()=>{next.remove();level++;start()})}
-      else ctx.info('🏆 Tre labirinti risolti · ⭐ '+points+' · Record '+ctx.score('maze'));
+      if(level<5){const next=button(root,'Prossimo labirinto',()=>{next.remove();level++;start()})}
+      else ctx.info('🏆 Cinque labirinti risolti · ⭐ '+points+' · Record '+ctx.score('maze'));
     }
   };
   movement(ctx,root,move);start();
-  ctx.tip.textContent='Muoviti con frecce o swipe. Tre labirinti sempre nuovi, via via più grandi. Meno passi danno più punti.';
+  ctx.tip.textContent='Muoviti con frecce o swipe. Cinque labirinti sempre nuovi, via via più grandi. Meno passi danno più punti.';
 }

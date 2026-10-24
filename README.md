@@ -1,6 +1,6 @@
-# La Nostra Sala Giochi
+# La Nostra Sala Giochi — V8
 
-Sala giochi HTML5/PWA senza account, pubblicità, tracciamento, CDN o servizi remoti. Dodici giochi touch; risultati e preferiti solo sul dispositivo. Sito previsto: https://astra1977.github.io/sala-giochi-nipotini/.
+Sala giochi HTML5/PWA senza account, pubblicità, tracciamento, CDN o servizi remoti. Dodici giochi touch, Tetris e Orchestra di Biscotto; record, preferiti e collezione di 60 Biscottini solo sul dispositivo. Sito previsto: https://astra1977.github.io/sala-giochi-nipotini/.
 
 ## Avvio locale
 
@@ -22,8 +22,8 @@ I browser possono liberare i dati locali sotto pressione di spazio; in quel caso
 
 ## Manutenzione
 
-- index.html: home e dialogo accessibile; home.png originale invariata, usata nel banner tramite CSS.
-- js/app.js, core.js, storage.js: navigazione, ciclo di vita e archivio locale.
+- index.html: home e dialogo accessibile; home.png originale invariata, protagonista di un panorama interattivo. Su telefono il panorama scorre orizzontalmente per mantenere leggibili e grandi le aree touch; i controlli generali restano sotto la grafica.
+- js/app.js, core.js, storage.js: navigazione, ciclo di vita e archivio locale. catalog.js definisce i dodici percorsi; progress.js gestisce lo schema versione 8 e le medaglie permanenti.
 - js/games/: giochi modulari. legacy.js conserva frutta e gatto SVG del progetto iniziale.
 - js/vendor/andrea/: solo il motore originale “Corsa su Strada” e Sound/U necessari. Vedere docs/ANDREA.md.
 - css/: stili locali, compresi gli stili dedicati al gioco di Andrea.
@@ -49,10 +49,18 @@ npx playwright install chromium
 npm run test:browser
 ```
 
+Sono presenti anche test del motore Tetris (7-bag, collisioni, rotazioni, righe, dieci livelli e game over), delle finestre ritmiche dei cinque brani e dei limiti di 5/60 Biscottini. I test browser producono screenshot della home a tre dimensioni in test-results/.
+
 Il test usa /usr/bin/chromium se presente, altrimenti il Chromium installato da Playwright. Facoltativamente impostare CHROMIUM_PATH. Parte un server locale temporaneo; il percorso testato è /sala-giochi-nipotini/. Non si collega al sito di produzione.
 
-I test di logica controllano 300 labirinti, fisica del tiro, archivio locale anche bloccato, inventario offline e hash dei sorgenti originali. Il test browser interagisce con le schermate e con input touch nativo emulato da Chromium. Vedere docs/TEST.md per risultati e prove su dispositivi reali.
+I test di logica controllano 500 labirinti, fisica del tiro, archivio locale anche bloccato, inventario offline e hash dei sorgenti originali. Il test browser interagisce con le schermate e con input touch nativo emulato da Chromium. Vedere docs/V8-TEST.md per risultati V8 e prove su dispositivi reali, e docs/V8-TRAGUARDI.md per la tabella dei dodici percorsi. docs/TEST.md conserva il collaudo della versione precedente.
 
 ## Pubblicazione
 
 Pubblicare tramite pull request nel solo repository Astra1977/sala-giochi-nipotini. Attendere revisione prima del merge. Non modificare klide1010/ChildGames. Vedere docs/TRANSFER.md se la connessione GitHub non permette di creare branch o pull request.
+
+## Giochi V8
+
+Bolle Colorate e Consegna il Bebè sono stati sostituiti definitivamente nella navigazione e nei record attivi da Orchestra di Biscotto e Tetris — La Torre dei Colori. I vecchi punteggi sono conservati nei dati locali, senza assegnarli ai nuovi giochi. Le medaglie richiedono obiettivi verificati dai motori: non vengono ottenute raggiungendo un punteggio arbitrario. Vedere docs/V8-TRAGUARDI.md.
+
+In Tetris frecce e spazio corrispondono ai cinque pulsanti touch; P mette in pausa. Nell’Orchestra si può usare la tastiera D/F/J/K, regolare il volume o disattivare i suoni. I suoni sono generati sul dispositivo: nessun file musicale o servizio esterno.

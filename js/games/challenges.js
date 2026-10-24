@@ -2,19 +2,13 @@ import { board, mission, button, shuffle, random } from '../core.js';
 import { record, saveFewest } from '../storage.js';
 
 export function memory(ctx) {
-  const root=board(ctx), controls=document.createElement('div');controls.className='levelControls';root.append(controls);
-  const label=document.createElement('label');label.textContent='Difficoltà ';label.htmlFor='memoryLevel';controls.append(label);
-  const select=document.createElement('select');select.id='memoryLevel';
-  for(const [value,text] of [['easy','Facile · 4 coppie'],['medium','Medio · 6 coppie'],['hard','Difficile · 10 coppie']]){
-    const option=document.createElement('option');option.value=value;option.textContent=text;select.append(option);
-  }
-  controls.append(select);
+  const root=board(ctx),stage=ctx.stage;
   const grid=document.createElement('div');grid.className='grid';root.append(grid);
   let generation=0;
   function deal(){
-    generation++;const round=generation,key='memory_'+select.value;
-    const pairs={easy:4,medium:6,hard:10}[select.value];
-    const symbols=shuffle(['🐼','🦁','🐧','🦊','🐱','🐸','🐙','🐝','🐬','🦋']).slice(0,pairs);
+    generation++;const round=generation,key='memory_path_'+stage;
+    const pairs=[4,6,8,10,12][stage-1];
+    const symbols=shuffle(['🐼','🦁','🐧','🦊','🐱','🐸','🐙','🐝','🐬','🦋','🐢','🦜']).slice(0,pairs);
     const cards=shuffle([...symbols,...symbols]);let open=[],matched=0,moves=0,locked=false;
     grid.replaceChildren();grid.style.gridTemplateColumns='repeat(4,1fr)';
     const update=()=>ctx.info('Coppie '+matched+'/'+pairs+' · Tentativi '+moves+' · Record '+(record(key)||'—')+' tentativi');
@@ -28,7 +22,7 @@ export function memory(ctx) {
           if(open[0].symbol===open[1].symbol){
             open.forEach(o=>{o.b.disabled=true;o.b.classList.add('matched')});
             matched++;open=[];
-            if(matched===pairs){saveFewest(key,moves);ctx.best('memory',Math.max(1,300-moves*3));}
+            if(matched===pairs){saveFewest(key,moves);ctx.best('memory',Math.max(1,stage*300-moves*3));ctx.complete(stage);}
           }else{
             locked=true;const pending=open;open=[];
             ctx.delay(()=>{
@@ -44,8 +38,8 @@ export function memory(ctx) {
     });
     update();
   }
-  select.onchange=deal;deal();
-  ctx.tip.textContent='Scopri due carte alla volta. Ogni difficoltà conserva il minor numero di tentativi su questo dispositivo.';
+  deal();
+  ctx.tip.textContent='Scopri due carte alla volta. Cinque livelli, da quattro a dodici coppie. Ogni livello completato conquista un Biscottino.';
 }
 
 export function roach(ctx) {
@@ -53,7 +47,8 @@ export function roach(ctx) {
   field.style.background='radial-gradient(circle,#d4ff9d,#50ae70)';ctx.play.append(field);
   let active=true,remaining=35,points=0,combo=0,boss=null,bossHits=0,defeated=0;
   const targets=new Set();
-  const update=()=>ctx.info('⏱ '+remaining+' s · ⭐ '+points+' · Combo '+combo+' · Boss '+bossHits+'/5');
+  const stage=ctx.stage,goal=[8,12,16,20,24][stage-1];let captures=0,errors=0;
+  const update=()=>ctx.info('⏱ '+remaining+' s · ⭐ '+points+' · Combo '+combo+' · Catture '+captures+'/'+goal+' · Errori '+errors+'/'+(5-stage)+' · Boss '+bossHits+'/5');
   const remove=b=>{targets.delete(b);b.remove()};
   const spawn=()=>{
     if(!active)return;
@@ -71,12 +66,12 @@ export function roach(ctx) {
     if(type!=='boss')ctx.delay(()=>remove(b),Math.max(650,1400-(35-remaining)*18));
     b.onclick=()=>{
       if(!active||!targets.has(b))return;
-      if(decoy){points=Math.max(0,points-(decoy==='biscotto'?30:15));combo=0;remove(b)}
+      if(decoy){errors++;points=Math.max(0,points-(decoy==='biscotto'?30:15)*stage);combo=0;remove(b)}
       else if(type==='boss'){
         hp--;bossHits=5-hp;combo++;points+=10;
         health.textContent=hp+' colpi';b.setAttribute('aria-label','Boss: '+hp+' colpi rimasti');
-        if(!hp){points+=100;defeated++;remove(b);boss=null}
-      }else{combo++;points+=10+Math.min(20,Math.floor(combo/3)*5);remove(b)}
+        if(!hp){points+=100;defeated++;captures++;remove(b);boss=null}
+      }else{captures++;combo++;points+=10+Math.min(20,Math.floor(combo/3)*5);remove(b)}
       update();
     };
   };
@@ -86,48 +81,14 @@ export function roach(ctx) {
     remaining--;update();
     if(remaining<=0){
       active=false;ctx.best('roach',points);
+      if(captures>=goal&&errors<=5-stage&&(stage<5||defeated>0))ctx.complete(stage);
       targets.forEach(b=>b.remove());targets.clear();
       ctx.info('🏆 '+points+' punti · Boss sconfitti '+defeated+' · Record '+ctx.score('roach'));
     }
   },1000);
   ctx.onCleanup(()=>{active=false});
-  ctx.tip.textContent='🪳 +10 e combo · 👑 cinque colpi sullo stesso boss, bonus +100. Non colpire Ricky/Bea (−15) o Biscotto (−30).';
+  ctx.tip.textContent='Missione '+stage+': '+goal+' catture, massimo '+(5-stage)+' errori'+(stage===5?' e un boss sconfitto':'')+'. Penalità ×'+stage+'. 🪳 +10 e combo · 👑 cinque colpi sullo stesso boss, bonus +100. Non colpire Ricky/Bea (−15) o Biscotto (−30).';
   spawn();update();
-}
-
-export function bubbles(ctx) {
-  const root=board(ctx),label=mission(root),field=document.createElement('div');field.className='bubbleField';root.append(field);
-  let level=1,popped=0,points=0,remaining=25,active=true,elapsed=0,spawnAt=0;
-  const bubbles=new Set();
-  const update=()=>{label.textContent='Livello '+level+' · Scoppia '+(level*8-popped)+' bolle per salire';ctx.info('⭐ '+points+' · ⏱ '+remaining+' s · Bolle '+popped)};
-  const colors=['#f4808e','#ffda59','#7dd99a','#9d9cec','#83dff2'];
-  const spawn=()=>{
-    if(!active||bubbles.size>=9)return;
-    const b=button(field,'✦',()=>{
-      if(!active||!bubbles.has(b))return;
-      bubbles.delete(b);b.remove();popped++;points+=level*5;
-      if(popped>=level*8){level++;remaining+=8}
-      update();
-    },'bubble');
-    const item={b,x:random(13,87),y:field.clientHeight+30,speed:35+level*12};
-    b.style.left=item.x+'%';b.style.top=item.y+'px';b.style.background=colors[Math.floor(random(0,colors.length))];
-    b.setAttribute('aria-label','Scoppia la bolla');
-    // Keep a minimum 48px target at every difficulty.
-    const size=Math.max(48,70-level*4);b.style.width=size+'px';b.style.height=size+'px';bubbles.add(b);
-    b.item=item;
-  };
-  ctx.frames(dt=>{
-    if(!active)return false;elapsed+=dt;
-    if(elapsed>spawnAt){spawn();spawnAt=elapsed+Math.max(.22,.85-level*.09)}
-    for(const b of bubbles){b.item.y-=b.item.speed*dt;b.style.top=b.item.y+'px';if(b.item.y < -45){b.remove();bubbles.delete(b)}}
-  });
-  ctx.every(()=>{
-    if(!active)return;
-    remaining--;update();
-    if(remaining<=0){active=false;ctx.best('bubbles',points);field.replaceChildren();bubbles.clear();label.textContent='🫧 Partita terminata';ctx.info('🏆 '+points+' punti · Livello '+level+' · Record '+ctx.score('bubbles'))}
-  },1000);
-  ctx.tip.textContent='Tocca le bolle che salgono. Ogni 8 bolle sali di livello e ricevi tempo extra; le bolle diventano più veloci.';
-  update();
 }
 
 const COLORS=[
@@ -138,18 +99,18 @@ export function chameleon(ctx) {
   const root=board(ctx),label=mission(root),sample=document.createElement('div');
   sample.className='colorSwatch';sample.setAttribute('role','img');root.append(sample);
   const choices=document.createElement('div');choices.className='colorChoices';root.append(choices);
-  let turn=0,level=1,points=0,target=0,time=12,active=true;
-  const update=()=>ctx.info('Livello '+level+'/3 · Round '+(turn+1)+'/15 · ⏱ '+time+' s · ⭐ '+points);
+  const stage=ctx.stage,goal=[5,7,9,11,13][stage-1];let turn=0,level=stage,points=0,target=0,time=16-stage*2,active=true;
+  const update=()=>ctx.info('Sfida '+level+'/5 · Colore '+Math.min(goal,turn+1)+'/'+goal+' · ⏱ '+time+' s · ⭐ '+points);
   const next=()=>{
-    level=1+Math.floor(turn/5);time=level===1?12:level===2?9:6;
-    const pool=COLORS.slice(0,level===1?3:level===2?5:6);target=Math.floor(random(0,pool.length));
+    time=16-stage*2;
+    const pool=COLORS.slice(0,level===1?3:level===2?4:level===3?5:6);target=Math.floor(random(0,pool.length));
     sample.style.background=pool[target][1];sample.setAttribute('aria-label','Camaleonte '+pool[target][0]);
     label.textContent=level===1?'🦎 Trova il colore '+pool[target][0]:'🦎 Qual è il colore del camaleonte?';
     choices.replaceChildren();
     shuffle(pool).forEach(([name,color])=>{
       const b=button(choices,level===1?'● '+name:name,()=>{
         if(!active)return;
-        if(name===pool[target][0]){points+=10*level+time;turn++;if(turn===15){finish('🌈 Quindici colori riconosciuti!');return}next()}
+        if(name===pool[target][0]){points+=10*level+time;turn++;if(turn===goal){ctx.complete(stage);finish('🌈 Sfida completata!');return}next()}
         else{points=Math.max(0,points-5);time=Math.max(0,time-2);if(!time){finish('⏰ Tempo scaduto');return}update()}
       },'');
       if(level===1){b.style.background=color;b.style.color=name==='Blu'?'white':'#142c36'}
@@ -163,5 +124,5 @@ export function chameleon(ctx) {
   };
   ctx.every(()=>{if(active){time--;if(time<=0)finish('⏰ Tempo scaduto');else update()}},1000);
   next();
-  ctx.tip.textContent='Riconosci il colore prima che scada il tempo. Ogni cinque risposte aumentano colori e difficoltà. Errore: −5 punti e −2 secondi.';
+  ctx.tip.textContent='Riconosci il colore prima che scada il tempo. Cinque sfide con più colori e meno tempo. Errore: −5 punti e −2 secondi.';
 }

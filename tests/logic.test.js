@@ -17,7 +17,7 @@ test('Andrea original road engine and immutable home keep their upstream Git blo
   if(fs.existsSync(path.join(root,'home.png')))assert.equal(gitHash(fs.readFileSync(path.join(root,'home.png'))),'8d2f2a2e58f65fff47f4eee65ba16fc5763d3563');
 });
 test('100 generated mazes at each difficulty are connected and have a reachable exit',()=>{
-  for(const size of [9,11,13])for(let trial=0;trial<100;trial++){
+  for(const size of [9,11,13,15,17])for(let trial=0;trial<100;trial++){
     const map=createMaze(size),queue=[[1,1]],seen=new Set(['1,1']);
     for(let i=0;i<queue.length;i++){
       const [x,y]=queue[i];

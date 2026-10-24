@@ -33,7 +33,7 @@ export function road(ctx) {
       cv.dispose=()=>observer.disconnect();
       return cv;
     },
-    info(text){detail=text;update()},
+    info(text){detail=text;const match=text.match(/Livello (\d+)/);if(match){const reached=Math.min(5,Number(match[1])-1);for(let step=1;step<=reached;step++)ctx.complete(step)}update()},
     add(n){if(ended)return;points=Math.max(0,points+n);ctx.best('car',points);update()},
     begin(){stage.dataset.running='true'},
     popup(text,x,y,kind=''){
