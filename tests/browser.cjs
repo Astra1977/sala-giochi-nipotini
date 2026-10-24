@@ -47,7 +47,7 @@ async function main(){
     for(const [name,viewport] of [['mobile',{width:390,height:844}],['landscape',{width:844,height:390}],['tablet',{width:768,height:1024}],['desktop',{width:1440,height:900}],['small',{width:320,height:568}]]){
       await page.setViewportSize(viewport);
       assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Document horizontal overflow');
-      assert(await page.locator('.illustratedScene').evaluate(el=>el.clientWidth>=900));
+      if(viewport.width<=700||viewport.width<=950&&viewport.height<=500)assert(await page.locator('.panorama').evaluate(el=>el.scrollWidth===el.clientWidth));else assert(await page.locator('.illustratedScene').evaluate(el=>el.clientWidth>=900));
       assert.equal(await page.locator('.gameCard[data-game="bubbles"],.gameCard[data-game="baby"]').count(),0);
       if(['mobile','tablet','desktop'].includes(name)){
         await page.locator('.panorama').evaluate(el=>el.scrollLeft=(el.scrollWidth-el.clientWidth)/2);

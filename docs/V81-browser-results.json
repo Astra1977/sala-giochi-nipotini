@@ -1,0 +1,101 @@
+{
+  "checks": [
+    "Before/after screenshots at 360, 390, 430, 768 and 1280 px; full original image and no document overflow",
+    "Phone landscape uses responsive grid; tablet and desktop keep the panorama",
+    "Android-emulated native touch: five Tetris controls, held soft drop, pause/focus loss, top-out and restart",
+    "All twelve game thumbnails remain accessible and games reopen offline on the responsive phone home",
+    "No JavaScript runtime errors"
+  ],
+  "layouts": [
+    {
+      "width": 360,
+      "overflow": false,
+      "panWidth": 344,
+      "panScroll": 344,
+      "sceneWidth": 344,
+      "image": {
+        "left": 8,
+        "right": 352,
+        "width": 344,
+        "height": 230.65625,
+        "naturalWidth": 1536,
+        "naturalHeight": 1024
+      },
+      "columns": "164px 164px",
+      "firstGame": 373.046875,
+      "panTop": 126.390625
+    },
+    {
+      "width": 390,
+      "overflow": false,
+      "panWidth": 374,
+      "panScroll": 374,
+      "sceneWidth": 374,
+      "image": {
+        "left": 8,
+        "right": 382,
+        "width": 374,
+        "height": 250.65625,
+        "naturalWidth": 1536,
+        "naturalHeight": 1024
+      },
+      "columns": "179px 179px",
+      "firstGame": 393.046875,
+      "panTop": 126.390625
+    },
+    {
+      "width": 430,
+      "overflow": false,
+      "panWidth": 414,
+      "panScroll": 414,
+      "sceneWidth": 414,
+      "image": {
+        "left": 8,
+        "right": 422,
+        "width": 414,
+        "height": 277.328125,
+        "naturalWidth": 1536,
+        "naturalHeight": 1024
+      },
+      "columns": "128.656px 128.672px 128.672px",
+      "firstGame": 419.71875,
+      "panTop": 126.390625
+    },
+    {
+      "width": 768,
+      "overflow": false,
+      "panWidth": 734,
+      "panScroll": 900,
+      "sceneWidth": 900,
+      "image": {
+        "left": 17,
+        "right": 917,
+        "width": 900,
+        "height": 600,
+        "naturalWidth": 1536,
+        "naturalHeight": 1024
+      },
+      "columns": "none",
+      "firstGame": 421.78125,
+      "panTop": 143.390625
+    },
+    {
+      "width": 1280,
+      "overflow": false,
+      "panWidth": 1216,
+      "panScroll": 1216,
+      "sceneWidth": 1216,
+      "image": {
+        "left": 32,
+        "right": 1248,
+        "width": 1216,
+        "height": 810.65625,
+        "naturalWidth": 1536,
+        "naturalHeight": 1024
+      },
+      "columns": "none",
+      "firstGame": 531.46875,
+      "panTop": 156.390625
+    }
+  ]
+}
