@@ -12,9 +12,25 @@ header{display:flex;align-items:center;justify-content:space-between;gap:8px}h1{
 #status{min-height:34px;font-size:18px;font-weight:bold}.target{position:absolute;font-size:62px;border:0;background:transparent;transform:translate(-50%,-50%);filter:drop-shadow(0 4px 2px #0005)}.target:active{scale:.9}
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px auto;max-width:430px}.tile{font-size:36px;min-height:73px;border-radius:12px;background:white;border:2px solid #f3b933}.tile.matched{background:#a1f1a1}.runner{height:230px;background:linear-gradient(#79d9ff 70%,#51bf54 70%);position:relative;overflow:hidden}.hero,.obstacle{position:absolute;bottom:25%;font-size:50px}.hero{left:15%}.obstacle{right:0}.tiny{font-size:13px;opacity:.9}#records{white-space:pre-line;text-align:left;max-width:360px;margin:auto}
 @media (max-width:650px){.panel{padding:9px}.grid{gap:5px}.tile{min-height:60px;font-size:30px}#play{min-height:300px}}
+
+/* Schermata verticale: banner e tessere ricostruiti dalla STESSA immagine originale */
+#mobileHome{display:none}
+@media(orientation:portrait) and (max-width:800px){
+ body{min-height:100dvh;background:linear-gradient(180deg,#0097d4,#025284)}
+ #home{display:none}
+ #mobileHome{display:block;padding-bottom:env(safe-area-inset-bottom)}
+ .mobileHero{width:100%;aspect-ratio:1536/465;background:url('home.png') top center/100% auto no-repeat}
+ .mobileGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;padding:6px}
+ .mobileGame{border:2px solid #ffdb65;border-radius:11px;aspect-ratio:250/200;background-image:url('home.png');background-repeat:no-repeat;box-shadow:0 3px 6px #003c69;min-width:0}
+ .mobileNav{display:flex;justify-content:space-around;gap:5px;padding:8px 4px 15px;background:#744016}
+ .mobileNav button{font-size:12px;font-weight:800;border:0;border-radius:9px;background:#ffd35a;color:#422500;padding:9px 5px;flex:1}
+ #modal{padding:5px}.panel{border-width:2px;min-height:95dvh;padding:8px}
+ #play{min-height:58dvh}
+ header h1{font-size:19px}header .btn{padding:9px 7px;font-size:12px}
+}
 </style></head>
 <body><main id="home" aria-label="La Nostra Sala Giochi, seleziona un gioco"></main>
-<div id="modal" role="dialog" aria-modal="true" aria-label="Gioco"><section class="panel"><header><button class="btn close" id="back">⌂ HOME</button><h1 id="title">Gioco</h1><button class="btn" id="restart">↻ Riprova</button></header><p id="status"></p><div id="play"></div><p class="tiny" id="tip"></p></section></div>
+<section id="mobileHome" aria-label="Sala giochi mobile"><div class="mobileHero"></div><div class="mobileGrid" id="mobileGrid"></div><nav class="mobileNav"><button data-go="records">⭐ Record</button><button data-go="records">🏆 Classifica</button><button data-go="home">🏠 Home</button><button data-go="profile">🙂 Profilo</button></nav></section><div id="modal" role="dialog" aria-modal="true" aria-label="Gioco"><section class="panel"><header><button class="btn close" id="back">⌂ HOME</button><h1 id="title">Gioco</h1><button class="btn" id="restart">↻ Riprova</button></header><p id="status"></p><div id="play"></div><p class="tiny" id="tip"></p></section></div>
 <script>
 'use strict';
 const games=[
@@ -27,6 +43,19 @@ const coords=[ [24,470,250,199],[283,470,248,199],[537,470,244,199],[787,470,225
 [24,686,250,200],[283,686,248,200],[537,686,234,200],[775,686,237,200],[1018,686,237,200],[1261,686,251,200] ];
 function hotspot(label,x,y,w,h,cb){const b=document.createElement('button');b.className='hot';b.setAttribute('aria-label',label);Object.assign(b.style,{left:x/1536*100+'%',top:y/1024*100+'%',width:w/1536*100+'%',height:h/1024*100+'%'});b.onclick=cb;home.append(b)}
 games.forEach((g,i)=>hotspot(g[0],...coords[i],()=>openGame(g[1],g[0])));
+const mobileGrid=document.getElementById('mobileGrid');
+games.forEach((g,i)=>{
+ const [x,y,w,h]=coords[i],b=document.createElement('button');
+ b.className='mobileGame';b.setAttribute('aria-label',g[0]);
+ b.style.backgroundSize=(1536/w*100)+'% '+(1024/h*100)+'%';
+ b.style.backgroundPosition=(x/(1536-w)*100)+'% '+(y/(1024-h)*100)+'%';
+ b.onclick=()=>openGame(g[1],g[0]);mobileGrid.append(b);
+});
+document.querySelectorAll('.mobileNav button').forEach(b=>b.onclick=()=>{
+ if(b.dataset.go!=='home')openGame(b.dataset.go,b.textContent);
+ else window.scrollTo({top:0,behavior:'smooth'});
+});
+
 hotspot('I miei record',190,904,208,112,()=>openGame('records','I miei record'));
 hotspot('Classifica',430,904,210,112,()=>openGame('records','Classifica'));
 hotspot('Profilo',894,904,220,112,()=>openGame('profile','Profilo'));
@@ -45,10 +74,82 @@ function makeButton(text,fn){let b=document.createElement('button');b.className=
 function rand(a,b){return a+Math.random()*(b-a)}
 function spawnEmoji(emoji,fn,size=60){const b=document.createElement('button');b.className='target';b.textContent=emoji;b.style.fontSize=size+'px';b.style.left=rand(14,85)+'%';b.style.top=rand(17,80)+'%';b.onclick=()=>fn(b);play.append(b);return b}
 function render(k){
- if(k==='roach'){let hits=0;info('Boss Cucaracha: colpiscila 5 volte! 🪳');tip.textContent='Tocca la cucaracha quando appare.';let roach=spawnEmoji('🪳',b=>{hits++;points++;info('Colpi: '+hits+'/5');if(hits===5){b.remove();info('🏆 Boss sconfitto! Hai vinto!');best(k,points)}else{b.style.left=rand(14,85)+'%';b.style.top=rand(17,80)+'%'}});return}
+ if(k==='roach'){
+ let remaining=35,active=true,bossHits=0,combo=0;
+ info('⏱ 35 s · Punti: 0 · Boss: 0/5');
+ tip.textContent='🪳 +10 · 🪳👑 boss 5 colpi · 🙂 esca −15! Attento!';
+ const field=document.createElement('div');field.style.cssText='position:relative;height:340px;background:radial-gradient(circle at center,#c3ff8c,#41a76b);border-radius:18px;overflow:hidden';play.append(field);
+ const update=()=>info('⏱ '+remaining+' s · ⭐ '+points+' · Boss '+bossHits+'/5 · Combo '+combo);
+ function spawn(){
+  if(!active)return;
+  const type=Math.random()<.24?'decoy':Math.random()<.25?'boss':'roach';
+  const b=document.createElement('button');b.className='target';
+  b.style.fontSize=(type==='boss'?65:type==='decoy'?57:49)+'px';
+  b.textContent=type==='decoy'?(Math.random()<.5?'👧':'👦'):type==='boss'?'🪳':'🪳';
+  b.style.left=rand(12,87)+'%';b.style.top=rand(17,82)+'%';
+  b.setAttribute('aria-label',type==='decoy'?'Non colpire il bambino':type==='boss'?'Cucaracha boss':'Cucaracha');
+  field.append(b);
+  let removed=false;
+  const remove=()=>{if(!removed){removed=true;b.remove()}};
+  const ttl=setTimeout(remove,type==='boss'?1550:Math.max(550,1250-(35-remaining)*16));
+  b.onclick=()=>{
+   if(removed||!active)return;
+   clearTimeout(ttl);remove();
+   if(type==='decoy'){points=Math.max(0,points-15);combo=0;field.style.background='#ff9b9b';setTimeout(()=>field.style.background='',180)}
+   else if(type==='boss'){bossHits++;points+=20;combo++;if(bossHits===5){points+=100;tip.textContent='🏆 Boss sconfitto! Bonus +100! Continua fino allo scadere.'}}
+   else {combo++;points+=10+(combo>=3?5:0)}
+   update();
+  };
+ }
+ const sp=setInterval(spawn,560),clock=setInterval(()=>{
+  remaining--;update();
+  if(remaining<=0){active=false;clearInterval(sp);clearInterval(clock);field.replaceChildren();best('roach',points);info('🏁 Fine! '+points+' punti · Record '+score('roach'));tip.textContent=bossHits===5?'Hai sconfitto il boss! 🏆':'Riprova per sconfiggere il boss!'}
+ },1000);
+ spawn();cleanup=()=>{active=false;clearInterval(sp);clearInterval(clock)};
+ return;
+ }
  if(k==='bubbles'||k==='fruit'){let time=25,active=true;info('Punti: 0 · Tempo: 25 s');tip.textContent=k==='fruit'?'Tocca la frutta, evita la bomba 💣!':'Scoppia più bolle che puoi!';let interval=setInterval(()=>{time--;info('Punti: '+points+' · Tempo: '+time+' s');if(time<=0){active=false;clearInterval(interval);best(k,points);info('⏰ Fine! Punti: '+points+' · Record: '+score(k));play.replaceChildren()}},1000);cleanup=()=>clearInterval(interval);let spawner=setInterval(()=>{if(!active)return;while(play.children.length>9)play.firstElementChild.remove();const bomb=k==='fruit'&&Math.random()<.18;spawnEmoji(k==='fruit'?(bomb?'💣':['🍉','🍎','🍍','🍊'][Math.floor(rand(0,4))]):['🫧','🔴','🟡','🟣','🟢'][Math.floor(rand(0,5))],b=>{if(!active)return;points+=bomb?-3:1;b.remove();info('Punti: '+points+' · Tempo: '+time+' s')},45)},650);let prev=cleanup;cleanup=()=>{prev();clearInterval(spawner)};return}
  if(k==='memory'){const symbols=['🐼','🦁','🐧','🦊','🐱','🐸'];let cards=[...symbols,...symbols].sort(()=>Math.random()-.5),open=[],matched=0,moves=0,locked=false;const grid=document.createElement('div');grid.className='grid';play.append(grid);info('Trova le 6 coppie!');cards.forEach((s,i)=>{let b=document.createElement('button');b.className='tile';b.textContent='❓';b.onclick=()=>{if(locked||b.classList.contains('matched')||open.some(o=>o.b===b))return;b.textContent=s;open.push({b,s});if(open.length===2){moves++;if(open[0].s===open[1].s){open.forEach(o=>o.b.classList.add('matched'));matched++;open=[];if(matched===6){info('🏆 Completato in '+moves+' tentativi!');best('memory',Math.max(1,100-moves*3))}}else{locked=true;let pending=open.slice();open=[];let t=setTimeout(()=>{pending.forEach(o=>o.b.textContent='❓');locked=false},750);let prev=cleanup;cleanup=()=>{prev();clearTimeout(t)}}}};grid.append(b)});return}
- if(k==='runner'){let alive=true,jumping=false,obX=100,scoreNow=0;play.innerHTML='<div class="runner"><span class="hero">🏃</span><span class="obstacle">💩</span></div>';const hero=play.querySelector('.hero'),ob=play.querySelector('.obstacle');const jump=()=>{if(!alive||jumping)return;jumping=true;hero.style.bottom='55%';setTimeout(()=>{hero.style.bottom='25%';jumping=false},620)};let btn=makeButton('⬆ SALTA!',jump);play.onclick=(e)=>{if(e.target!==btn)jump()};let key=e=>{if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();jump()}};window.addEventListener('keydown',key);info('Salta le cacche!');tip.textContent='Tocca SALTA o premi spazio. Il gioco accelera.';let timer=setInterval(()=>{if(!alive)return;obX-=3+Math.min(scoreNow/5,4);if(obX<12&&obX>4&&!jumping){alive=false;info('💩 Ops! Punti: '+scoreNow);best('runner',scoreNow);clearInterval(timer)}if(obX< -12){obX=100;scoreNow++;info('Punti: '+scoreNow)}ob.style.right=(100-obX)+'%'},35);cleanup=()=>{clearInterval(timer);window.removeEventListener('keydown',key);play.onclick=null};return}
+ if(k==='runner'){
+ let active=true,elapsed=0,scoreNow=0,jumpUntil=0,obstacles=[],last=0,frame=0;
+ play.innerHTML='<div class="runner" style="height:320px;position:relative;overflow:hidden"><div class="hero" style="left:15%;bottom:23%;font-size:48px">🏃</div><div id="obLayer"></div><div style="position:absolute;bottom:0;width:100%;height:23%;background:repeating-linear-gradient(90deg,#7bba42 0 32px,#85c64b 32px 64px)"></div></div>';
+ const field=play.querySelector('.runner'),hero=play.querySelector('.hero'),layer=play.querySelector('#obLayer');
+ const jump=()=>{if(!active)return;const now=performance.now();if(now>jumpUntil-220)jumpUntil=now+720};
+ makeButton('⬆ SALTA!',jump);
+ const tap=e=>{if(e.target.closest('.runner'))jump()};play.addEventListener('pointerdown',tap);
+ const key=e=>{if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();jump()}};window.addEventListener('keydown',key);
+ info('⭐ 0 · Schiva le cacche!');tip.textContent='Tocca il campo o SALTA. Cacche piccole, grandi e doppie; velocità crescente.';
+ let previous=performance.now(),spawnAt=0;
+ function tick(now){
+  if(!active)return;
+  const dt=Math.min((now-previous)/1000,.05);previous=now;elapsed+=dt;
+  const jumping=now<jumpUntil;
+  const phase=jumping?1-(jumpUntil-now)/720:0;
+  const lift=jumping?Math.sin(Math.PI*phase)*125:0;
+  hero.style.transform='translateY('+(-lift)+'px)';
+  if(elapsed>spawnAt){
+   const size=[32,45,60,75][Math.floor(Math.random()*4)];
+   const obj={x:field.clientWidth+30,size,el:document.createElement('span'),passed:false};
+   obj.el.textContent='💩';obj.el.style.cssText='position:absolute;bottom:23%;font-size:'+size+'px;line-height:1;transform:translateX(-50%);z-index:2';
+   layer.append(obj.el);obstacles.push(obj);
+   spawnAt=elapsed+rand(.85,1.55)*Math.max(.65,1-elapsed/180);
+  }
+  const speed=175+Math.min(200,elapsed*4);
+  const heroX=field.clientWidth*.15+20;
+  obstacles.forEach(o=>{
+   o.x-=speed*dt;o.el.style.left=o.x+'px';
+   if(!o.passed&&o.x<heroX-45){o.passed=true;scoreNow+=Math.round(o.size/10);info('⭐ '+scoreNow+' · Velocità '+Math.round(speed))}
+   if(Math.abs(o.x-heroX)<(o.size*.32+12)&&lift<o.size*.75){
+    active=false;best('runner',scoreNow);info('💥 Ops! '+scoreNow+' punti · Record '+score('runner'));tip.textContent='Riprova: cambia dimensione e ritmo degli ostacoli!';
+   }
+  });
+  obstacles=obstacles.filter(o=>{if(o.x< -90){o.el.remove();return false}return true});
+  if(active)frame=requestAnimationFrame(tick);
+ }
+ frame=requestAnimationFrame(tick);
+ cleanup=()=>{active=false;cancelAnimationFrame(frame);play.removeEventListener('pointerdown',tap);window.removeEventListener('keydown',key)};
+ return;
+ }
  if(k==='records'){info('I tuoi migliori punteggi (salvati su questo dispositivo)');let p=document.createElement('p');p.id='records';p.textContent='🪳 Cucaracha: '+score('roach')+'\n💩 Salta la Cacca: '+score('runner')+'\n🍉 Frutta: '+score('fruit')+'\n🫧 Bolle: '+score('bubbles')+'\n🧠 Memory: '+score('memory');play.append(p);return}
  if(k==='settings'){info('Impostazioni');let p=document.createElement('p');p.textContent='I record sono memorizzati solo nel browser, senza account e senza inviare dati online.';play.append(p);makeButton('Cancella record locali',()=>{if(confirm('Cancellare tutti i record di questo browser?')){['roach','runner','fruit','bubbles','memory'].forEach(x=>localStorage.removeItem('best_'+x));info('Record cancellati')}});return}
  if(k==='profile'||k==='favorites'){info('Questa funzione arriverà in una prossima versione.');return}

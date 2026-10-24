@@ -1,14 +1,5 @@
-# La Nostra Sala Giochi
+# La Nostra Sala Giochi — v2
 
-Prima versione HTML5 da zero. La schermata principale usa esattamente l’immagine approvata `home.png`.
+Schermata verticale mobile con griglia di tessere ricavata dall'immagine originale. Cucaracha a tempo con boss ed esche; Salta la Cacca con ostacoli variabili.
 
-## Giocabili
-Acchiappa la Cucaracha (boss 5 colpi), Salta la Cacca, Taglia la Frutta, Memory, Bolle Colorate.
-
-## In preparazione
-Mini Town, La Macchina, Avventura Foresta, Consegna il Bebè, Palla nel Cesto, Labirinto, Chameleon.
-
-## Pubblicazione
-Caricare `index.html`, `home.png` e `README.md` nella radice del repository GitHub. Settings → Pages → Deploy from a branch → main / (root).
-
-Nessun account, pubblicità, foto originali o analytics. I record sono salvati solo in localStorage nel browser.
+Caricare `index.html` e `home.png` nella radice del repository GitHub Pages.
