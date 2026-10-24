@@ -1,0 +1,22 @@
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(#0877bd,#063b65);font-family:system-ui,Arial,sans-serif;color:white}button{font:inherit;cursor:pointer;touch-action:manipulation}
+#modal{position:fixed;inset:0;background:#031c35ee;display:none;z-index:3;overflow:auto}
+.panel{max-width:680px;margin:0 auto;background:linear-gradient(155deg,#087dbd,#0b3978 70%,#092959);border:4px solid #ffcf48;border-radius:25px;box-shadow:0 12px 35px #0008;text-align:center}
+header{display:flex;align-items:center;justify-content:space-between;gap:8px}p{line-height:1.4}.btn{background:linear-gradient(#ffe57c,#ffbd16);border:0;border-radius:14px;padding:12px 18px;color:#3e2700;font-weight:800;margin:5px;box-shadow:0 4px #ad7316}.btn:active{transform:translateY(3px);box-shadow:none}.close{background:#ff6e70;color:#fff;box-shadow:none}
+#play{position:relative;border-radius:17px;background:linear-gradient(#7de2ff,#4ebeea);overflow:hidden;color:#123;touch-action:manipulation}
+.target{position:absolute;font-size:62px;border:0;background:transparent;transform:translate(-50%,-50%);filter:drop-shadow(0 4px 2px #0005)}.target:active{scale:.9}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px auto;max-width:430px}.tile{font-size:36px;min-height:65px;border-radius:12px;background:white;border:2px solid #f3b933}.tile.matched{background:#a1f1a1}.runner{height:230px;background:linear-gradient(#79d9ff 70%,#51bf54 70%);position:relative;overflow:hidden}.tiny{font-size:13px}
+.avatarTarget{width:68px;height:68px;object-fit:cover;border-radius:50%;border:4px solid #ffdb50;background:#fff;pointer-events:none}
+ /* Biscotto corre e salta: corpo intero, niente collage umano */
+.runnerRicky{position:absolute;left:12%;bottom:23%;width:82px;height:70px;z-index:3;transform-origin:bottom center;pointer-events:none;filter:drop-shadow(0 3px 2px #1238)}
+.runnerRicky svg{display:block;width:100%;height:100%;overflow:visible}
+.gameBoard{position:relative;min-height:330px;border-radius:16px;background:linear-gradient(#75d9fa,#b1f3dd);padding:12px;color:#10324c;overflow:hidden}
+.gameBoard button{touch-action:manipulation}
+.gameRow{display:flex;flex-wrap:wrap;justify-content:center;gap:9px;margin:14px auto}
+.gameChoice{border:3px solid #fff7a6;background:#fff9db;border-radius:16px;padding:12px;min-width:75px;min-height:75px;font-size:34px;box-shadow:0 4px #b68c2c}
+.gameChoice:active{transform:scale(.94)}
+.mazeGrid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;max-width:400px;margin:15px auto}
+.mazeGrid div{aspect-ratio:1;display:grid;place-items:center;border-radius:5px;background:#fff6ce;font-size:clamp(18px,5vw,32px)}
+.mazeGrid .wall{background:#246a57}
+#fruitField{height:clamp(340px,60dvh,560px);position:relative;overflow:hidden;touch-action:none;background:linear-gradient(#43c9f7,#0b7d9e 72%,#165b3a);border-radius:18px;user-select:none}
+.fruitItem{position:absolute;display:grid;place-items:center;border:0;background:transparent;font-size:clamp(44px,10vw,70px);width:76px;height:76px;touch-action:none;user-select:none}
+#slashCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}

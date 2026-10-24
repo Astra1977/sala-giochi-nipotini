@@ -1,0 +1,12 @@
+/* Scoped host styles derived from Andrea's canvas/intro/popup components. */
+.roadStage{position:relative;width:100%;height:clamp(350px,62dvh,570px);min-height:350px;border-radius:14px;overflow:hidden;background:#2a1458;touch-action:none}
+.roadCanvas{position:absolute;inset:0;display:block;width:100%;height:100%;touch-action:none;border-radius:14px}
+.roadIntro{position:absolute;inset:0;z-index:3;overflow:auto;background:#2a1458dd;padding:14px;display:flex;align-items:safe center;justify-content:center;touch-action:pan-y}
+.roadCard{background:#fff8e5;border-radius:20px;padding:16px;width:min(100%,470px);color:#2b2140;box-shadow:0 6px 24px #0005;max-height:100%;overflow:auto}
+.roadCard h3{font-size:26px;margin:4px 0 10px}.roadCard p{font-size:15px;line-height:1.4}
+.roadCard .btn{display:block;width:100%;margin:10px 0;font-size:14px}
+.roadPopup{position:absolute;z-index:2;transform:translate(-50%,-50%);pointer-events:none;font-weight:900;font-size:23px;max-width:90%;text-align:center;color:white;text-shadow:0 2px 3px #000;animation:roadFloat 1s ease-out forwards}
+.roadPopup.gold{color:#ffd23f}.roadPopup.bad{color:#ff7185}.roadPopup.combo{color:#7cffcb}
+@keyframes roadFloat{to{opacity:0;transform:translate(-50%,-140%)}}
+@media(orientation:landscape) and (max-height:500px){.roadStage{height:320px;min-height:320px}.roadCard{padding:10px}.roadCard h3{font-size:21px}.roadCard p{font-size:13px}}
+@media(prefers-reduced-motion:reduce){.roadPopup{animation:none}}
