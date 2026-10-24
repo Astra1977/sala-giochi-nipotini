@@ -1,5 +1,3 @@
-# La Nostra Sala Giochi — v2
+# Sala Giochi V3
 
-Schermata verticale mobile con griglia di tessere ricavata dall'immagine originale. Cucaracha a tempo con boss ed esche; Salta la Cacca con ostacoli variabili.
-
-Caricare `index.html` e `home.png` nella radice del repository GitHub Pages.
+Aggiornamento: avatar cartoon ricavati da home.png per Ricky, Bea e Biscotto; runner con Ricky; frutta tagliabile trascinando il dito; penalità doppia per Biscotto. Caricare index.html e i tre avatar PNG nella root GitHub. home.png invariata.
