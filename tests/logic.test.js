@@ -55,7 +55,7 @@ test('records retain maximum score and minimum memory attempts even without stor
 test('every runtime module, nested asset and icon is listed in the offline inventory',()=>{
   const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
   const assets=JSON.parse(sw.match(/const ASSETS = (\[[\s\S]*?\]);/)[1]);
-  for(const folder of ['js','css','icons']){
+  for(const folder of ['js','css','icons','assets']){
     for(const file of fs.readdirSync(path.join(root,folder),{recursive:true})){
       const name=folder+'/'+file;
       if(fs.statSync(path.join(root,name)).isFile())assert(assets.includes(name),'Not cached: '+name);

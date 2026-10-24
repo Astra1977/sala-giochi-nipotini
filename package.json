@@ -6,7 +6,7 @@
     "build": "python3 scripts/build-offline.py",
     "test": "node tests/logic.test.js && node tests/v8.test.js && node tests/tetris-v81.test.js",
     "test:browser": "node tests/browser.cjs",
-    "test:v81": "node tests/home-v81.cjs",
+    "test:v82": "node tests/brand-v82.cjs",
     "serve": "python3 -m http.server 8080"
   },
   "devDependencies": { "playwright": "1.62.1" }

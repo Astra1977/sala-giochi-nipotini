@@ -14,7 +14,7 @@ for(const file of [...assets,'sw.js']){
     fs.copyFileSync(path.join(root,'icons/icon-512.png'),dest);fixtureHome=true;
   }else fs.copyFileSync(path.join(root,file),dest);
 }
-const mime={'.html':'text/html','.js':'application/javascript','.css':'text/css','.png':'image/png','.svg':'image/svg+xml','.webmanifest':'application/manifest+json'};
+const mime={'.html':'text/html','.js':'application/javascript','.css':'text/css','.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml','.webmanifest':'application/manifest+json'};
 let blockHome=false;
 const server=http.createServer((req,res)=>{
   const pathname=decodeURIComponent(new URL(req.url,'http://localhost').pathname);
@@ -37,6 +37,7 @@ async function main(){
     await page.waitForFunction(()=>document.querySelectorAll('.gameCard').length===12);
     await page.waitForFunction(()=>document.querySelector('#offlineState').textContent.includes('Pronta'));
     await page.waitForFunction(()=>navigator.serviceWorker.controller);
+    await page.locator('#launchSplash[hidden]').waitFor({state:'attached'});
     const cached=await page.evaluate(async()=>{const keys=await caches.keys();return (await (await caches.open(keys[0])).keys()).length});assert.equal(cached,assets.length);
     pass('All '+assets.length+' local assets cached at /sala-giochi-nipotini/, including new engines and Biscotto SVG');
     await page.clock.install();
@@ -47,7 +48,7 @@ async function main(){
     for(const [name,viewport] of [['mobile',{width:390,height:844}],['landscape',{width:844,height:390}],['tablet',{width:768,height:1024}],['desktop',{width:1440,height:900}],['small',{width:320,height:568}]]){
       await page.setViewportSize(viewport);
       assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Document horizontal overflow');
-      if(viewport.width<=700||viewport.width<=950&&viewport.height<=500)assert(await page.locator('.panorama').evaluate(el=>el.scrollWidth===el.clientWidth));else assert(await page.locator('.illustratedScene').evaluate(el=>el.clientWidth>=900));
+      assert(await page.locator('.panorama').evaluate(el=>el.scrollWidth===el.clientWidth));assert(await page.locator('.heroBanner').evaluate(el=>el.clientWidth<=innerWidth));
       assert.equal(await page.locator('.gameCard[data-game="bubbles"],.gameCard[data-game="baby"]').count(),0);
       if(['mobile','tablet','desktop'].includes(name)){
         await page.locator('.panorama').evaluate(el=>el.scrollLeft=(el.scrollWidth-el.clientWidth)/2);
