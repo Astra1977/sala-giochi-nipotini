@@ -31,12 +31,13 @@ export function basketball(ctx){
   canvas.className='ballCourt';canvas.width=1000;canvas.height=760;canvas.tabIndex=0;
   canvas.setAttribute('aria-label','Campo da basket. Trascina la palla verso il canestro e rilascia per tirare.');root.append(canvas);
   const paint=canvas.getContext('2d');paint.scale(2,2);
+  const stage=ctx.stage,goal=stage+1,maxShots=stage+4;let hits=0;
   let shots=0,points=0,scored=false,inFlight=false,active=true,aim=null,ball={x:92,y:320,vx:0,vy:0},flightTime=0;
   const hoop={x:335,y:150,width:95};
-  const update=()=>{label.textContent='Tiro '+Math.min(10,shots+1)+'/10 · Trascina dalla palla verso il canestro';ctx.info('⭐ '+points+' · Record '+ctx.score('ball'))};
+  const update=()=>{label.textContent='Tiro '+Math.min(maxShots,shots+1)+'/'+maxShots+' · Canestri '+hits+'/'+goal+' · Trascina dalla palla verso il canestro';ctx.info('Punti '+points+' · Record '+ctx.score('ball'))};
   const reset=()=>{
     inFlight=false;scored=false;ball={x:80+(shots%3)*22,y:320,vx:0,vy:0};
-    hoop.x=335-(Math.floor(shots/3)%2)*35;hoop.y=150-(Math.floor(shots/3)%3)*12;hoop.width=Math.max(65,95-shots*3);
+    hoop.x=335-(Math.floor(shots/3)%2)*35;hoop.y=150-(Math.floor(shots/3)%3)*12;hoop.width=Math.max(65,100-stage*5-shots*2);
     update();
   };
   const local=e=>{const r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)*500/r.width,y:(e.clientY-r.top)*380/r.height}};
@@ -81,9 +82,9 @@ export function basketball(ctx){
     if(inFlight&&active){
       flightTime+=dt;
       // Substeps keep fast balls from skipping rim collisions.
-      for(let i=0;i<3;i++)if(advanceBall(ball,dt/3,hoop,scored)){scored=true;points+=20;ctx.best('ball',points);ctx.info('🏀 Canestro! ⭐ '+points)}
+      for(let i=0;i<3;i++)if(advanceBall(ball,dt/3,hoop,scored)){scored=true;hits++;points+=20;ctx.best('ball',points);ctx.info('🏀 Canestro! ⭐ '+points)}
       if(ball.y>410||flightTime>4){
-        if(shots>=10){active=false;inFlight=false;label.textContent='🏆 Partita finita';ctx.info(points+' punti · Record '+ctx.score('ball'))}
+        if(shots>=maxShots){if(hits>=goal)ctx.complete(stage);active=false;inFlight=false;label.textContent='🏆 Partita finita';ctx.info(points+' punti · Record '+ctx.score('ball'))}
         else reset();
       }
     }
@@ -95,6 +96,6 @@ export function basketball(ctx){
     paint.strokeStyle='#703c17';paint.lineWidth=1.5;paint.beginPath();paint.arc(ball.x,ball.y,12,0,Math.PI*2);paint.moveTo(ball.x-12,ball.y);paint.lineTo(ball.x+12,ball.y);paint.moveTo(ball.x,ball.y-12);paint.lineTo(ball.x,ball.y+12);paint.stroke();
     if(scored){paint.fillStyle='#1c6950';paint.font='bold 23px system-ui';paint.fillText('CANESTRO! +20',160,70)}
   });
-  ctx.tip.textContent='Parti dalla palla, trascina in alto verso destra e rilascia. La linea mostra la traiettoria. Da tastiera: frecce per mirare, spazio per tirare. Dieci tiri, canestro più piccolo.';
+  ctx.tip.textContent='Parti dalla palla, trascina in alto verso destra e rilascia. La linea mostra la traiettoria. Da tastiera: frecce per mirare, spazio per tirare. Cinque sfide: servono '+goal+' canestri in '+maxShots+' tiri. Canestro più piccolo nelle sfide successive.';
   update();
 }

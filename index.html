@@ -15,17 +15,24 @@
   <link rel="stylesheet" href="./css/legacy.css">
   <link rel="stylesheet" href="./css/app.css">
   <link rel="stylesheet" href="./css/road.css">
+  <link rel="stylesheet" href="./css/v8.css">
   <script type="module" src="./js/app.js"></script>
   <script type="module" src="./js/pwa.js"></script>
 </head>
 <body>
   <main id="home" aria-labelledby="homeTitle">
-    <div class="heroArt" aria-hidden="true"><img src="./home.png" alt="" width="1536" height="1024"></div>
     <section class="welcome">
-      <div><p class="eyebrow">UN MONDO DI PICCOLE AVVENTURE</p><h1 id="homeTitle">La nostra sala giochi</h1><p>Scegli un gioco e divertiti. I record restano su questo dispositivo.</p></div>
+      <div><p class="eyebrow">RICKY, BEA E BISCOTTO TI ASPETTANO</p><h1 id="homeTitle">La nostra sala giochi</h1></div>
       <span id="offlineState" role="status">Preparazione per giocare offline…</span>
     </section>
-    <div id="gameGrid" class="gameGrid" aria-label="Scegli un gioco"></div>
+    <div class="panoramaGuide"><p id="panoramaHelp">Esplora la spiaggia e tocca un gioco. Su telefono scorri il panorama a destra e a sinistra.</p><div><button class="btn" id="panLeft" aria-label="Mostra la parte sinistra del panorama">←</button><button class="btn" id="panRight" aria-label="Mostra la parte destra del panorama">→</button></div></div>
+    <div class="panorama" tabindex="0" aria-describedby="panoramaHelp">
+      <div class="illustratedScene">
+        <img src="./home.png" alt="Ricky, Bea e il gatto Biscotto sulla spiaggia tropicale della nostra Sala Giochi" width="1536" height="1024">
+        <div id="gameGrid" aria-label="Scegli uno dei dodici giochi"></div>
+      </div>
+    </div>
+    <p id="collectionHome"></p>
     <nav class="homeNav" aria-label="Sala giochi">
       <button class="btn" data-go="records">⭐ Record</button>
       <button class="btn" data-go="favorites">♥ Preferiti</button>
@@ -36,6 +43,7 @@
     <aside id="updateNotice" hidden role="status">È pronta una nuova versione. <button class="btn" id="updateApp">Aggiorna e torna alla home</button></aside>
     <noscript>Per giocare serve JavaScript attivo nel browser.</noscript>
   </main>
+  <div id="rewardToast" role="status" hidden></div>
   <div id="modal" role="dialog" aria-modal="true" aria-labelledby="title" tabindex="-1" inert>
     <section class="panel">
       <header><button class="btn close" id="back">⌂ Home</button><h2 id="title">Gioco</h2><button class="btn" id="restart">↻ Riprova</button></header>

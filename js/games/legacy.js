@@ -5,14 +5,15 @@ export function mountLegacy(ctx, k) {
   const rand = (a,b) => a + Math.random()*(b-a);
  if(k==='fruit'){
   let remaining=35,active=true,items=[],lastPointer=null,trail=[];
+  const stage=ctx.stage,goal=[8,12,16,20,24][stage-1];let hits=0,bombs=0,combo=0,maxCombo=0,lastHit=-Infinity;
   info('🍉 Punti: 0 · ⏱ 35 s');
-  tip.textContent='Scorri il dito per tagliare la frutta! Lanci bassi, medi e alti: segui la traiettoria. Evita le bombe 💣 (−20).';
+  tip.textContent='Sfida '+stage+': '+goal+' frutti, massimo '+Math.max(0,4-stage)+' bombe, combo '+stage+'. Scorri il dito per tagliare la frutta! Lanci bassi, medi e alti: segui la traiettoria. Evita le bombe 💣 (−20).';
   const field=document.createElement('div');field.id='fruitField';play.append(field);
   const canvas=document.createElement('canvas');canvas.id='slashCanvas';field.append(canvas);
   const paint=canvas.getContext('2d');
   const resize=()=>{canvas.width=field.clientWidth;canvas.height=field.clientHeight};
   resize();window.addEventListener('resize',resize);
-  function update(){info('🍉 Punti: '+points+' · ⏱ '+remaining+' s')}
+  function update(){info('🍉 Punti: '+points+' · Frutti '+hits+'/'+goal+' · Bombe '+bombs+' · Combo '+maxCombo+' · ⏱ '+remaining+' s')}
   function addFruit(){
     if(!active)return;
     const bomb=Math.random()<.16;
@@ -27,6 +28,7 @@ export function mountLegacy(ctx, k) {
   function slice(obj){
     if(obj.hit||!active)return;
     obj.hit=true;points+=obj.bomb?-20:10;
+    if(obj.bomb){bombs++;combo=0}else{hits++;const now=performance.now();combo=now-lastHit<1300?combo+1:1;lastHit=now;maxCombo=Math.max(maxCombo,combo)}
     if(points<0)points=0;
     obj.b.textContent=obj.bomb?'💥':'✨';obj.b.style.transform='scale(1.35)';
     ctx.delay(()=>obj.b.remove(),180);update();
@@ -60,12 +62,13 @@ export function mountLegacy(ctx, k) {
     frame=requestAnimationFrame(tick);
   }
   frame=requestAnimationFrame(tick);
-  const clock=setInterval(()=>{remaining--;update();if(remaining<=0){active=false;clearInterval(clock);cancelAnimationFrame(frame);best('fruit',points);info('🏆 Fine! '+points+' punti · Record '+score('fruit'));tip.textContent='Premi Riprova per una nuova sfida!'}},1000);
+  const clock=setInterval(()=>{remaining--;update();if(remaining<=0){active=false;clearInterval(clock);cancelAnimationFrame(frame);best('fruit',points);if(hits>=goal&&bombs<=Math.max(0,4-stage)&&maxCombo>=stage)ctx.complete(stage);info('🏆 Fine! '+points+' punti · Record '+score('fruit'));tip.textContent='Premi Riprova per una nuova sfida!'}},1000);
   ctx.onCleanup(()=>{active=false;clearInterval(clock);cancelAnimationFrame(frame);window.removeEventListener('resize',resize)});
   return;
  }
  if(k==='runner'){
  let active=true,elapsed=0,scoreNow=0,jumpUntil=0,obstacles=[],frame=0;
+ const stage=ctx.stage,duration=[12,18,24,30,36][stage-1];
  play.innerHTML=`<div class="runner" style="height:320px;position:relative;overflow:hidden"><div class="runnerRicky" aria-label="Gatto grigio e bianco">
 <svg viewBox="0 0 110 92" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Gatto grigio e bianco che corre verso destra">
 <path d="M25 55 C-5 56 0 22 17 25 C24 26 23 35 17 35 C15 35 16 48 30 45" fill="none" stroke="#717986" stroke-width="10" stroke-linecap="round"/>
@@ -87,7 +90,7 @@ export function mountLegacy(ctx, k) {
  makeButton('⬆ SALTA!',jump);
  const tap=e=>{if(e.target.closest('.runner'))jump()};play.addEventListener('pointerdown',tap);
  const key=e=>{if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();jump()}};window.addEventListener('keydown',key);
- info('⭐ 0 · Schiva le cacche!');tip.textContent='Aiuta Biscotto a saltare! Tocca il campo o SALTA: ostacoli piccoli, grandi e velocità crescente.';
+ info('Percorso '+stage+': sopravvivi '+duration+' secondi');tip.textContent='Aiuta Biscotto a saltare! Tocca il campo o SALTA: ostacoli piccoli, grandi e velocità crescente.';
  let previous=performance.now(),spawnAt=0;
  function tick(now){
   if(!active)return;
@@ -103,16 +106,17 @@ export function mountLegacy(ctx, k) {
    layer.append(obj.el);obstacles.push(obj);
    spawnAt=elapsed+rand(.85,1.55)*Math.max(.65,1-elapsed/180);
   }
-  const speed=175+Math.min(200,elapsed*4);
+  const speed=160+stage*15+Math.min(170,elapsed*3);
   const heroX=field.clientWidth*.12+40;
   obstacles.forEach(o=>{
    o.x-=speed*dt;o.el.style.left=o.x+'px';
-   if(!o.passed&&o.x<heroX-45){o.passed=true;scoreNow+=Math.round(o.size/10);info('⭐ '+scoreNow+' · Velocità '+Math.round(speed))}
-   if(Math.abs(o.x-heroX)<(o.size*.32+24)&&lift<o.size*.70){
+   if(!o.passed&&o.x<heroX-45){o.passed=true;scoreNow+=Math.round(o.size/10);info('⭐ '+scoreNow+' · Percorso '+stage+' · '+Math.floor(elapsed)+'/'+duration+' s')}
+   if(Math.abs(o.x-heroX)<(o.size*.28+18)&&lift<o.size*.70){
     active=false;best('runner',scoreNow);info('💥 Ops! '+scoreNow+' punti · Record '+score('runner'));tip.textContent='Riprova: cambia dimensione e ritmo degli ostacoli!';
    }
   });
   obstacles=obstacles.filter(o=>{if(o.x< -90){o.el.remove();return false}return true});
+  if(active&&elapsed>=duration){active=false;best('runner',scoreNow);ctx.complete(stage);info('Percorso '+stage+' completato! '+scoreNow+' punti')}
   if(active)frame=requestAnimationFrame(tick);
  }
  frame=requestAnimationFrame(tick);
