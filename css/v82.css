@@ -1,0 +1,54 @@
+:root{--tropical-ink:#173d52;--wood:#975028;--sand:#fff0bc;--leaf:#247b56}
+.srOnly{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+body{background:radial-gradient(ellipse at 50% 0,#1199ae,#07647d 60%,#063c52);color:#fff6de}
+#home{width:min(1180px,100%);padding:12px max(8px,env(safe-area-inset-right)) 0 max(8px,env(safe-area-inset-left))}
+.panorama{width:100%;overflow:visible;border:0;border-radius:0;box-shadow:none;background:none}
+.illustratedScene{position:relative;min-width:0;max-width:100%;width:100%;aspect-ratio:auto}
+.heroBanner{position:relative;width:100%;aspect-ratio:1536/465;overflow:hidden;border:3px solid #efce87;border-radius:20px;box-shadow:0 6px 18px #002e4c66;background:#078aac}
+.heroBanner img{position:absolute;top:0;left:0;display:block;width:100%;height:auto;max-width:none;pointer-events:none;user-select:none}
+.bannerAction{position:absolute;top:1%;width:7.2%;height:25%;min-width:44px;min-height:44px;padding:0;border:0;border-radius:10px;background:transparent}
+#bannerSettings{left:.6%}#bannerRecords{left:81%}.bannerAction:focus-visible{outline:3px solid #fff2a6;outline-offset:-2px}
+#gameGrid{position:static;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0 0;padding:0 2px;align-items:start}
+#gameGrid .illustratedHotspot{position:relative;inset:auto!important;width:100%!important;height:auto!important;aspect-ratio:5/4;min-width:0;min-height:88px;border:2px solid #efce87;border-radius:13px;box-shadow:0 4px 8px #002f4866;color:var(--tropical-ink);font-size:13px;text-shadow:none;overflow:hidden}
+#gameGrid .illustratedHotspot:not(.newGame){background-image:url('../home.png');background-repeat:no-repeat;background-size:var(--thumb-size);background-position:var(--thumb-position)}
+#gameGrid .illustratedHotspot>span:first-child{position:absolute;inset:0 0 auto;z-index:1;height:38%;min-height:32px;padding:3px 4px;border:0;border-radius:10px 10px 0 0;background:linear-gradient(#fff8d9,#f8df9e);color:#173d52;line-height:1.05;font-weight:850;display:flex;align-items:center;justify-content:center}
+#gameGrid .illustratedHotspot:active{transform:translateY(2px)}
+#gameGrid .illustratedHotspot:focus-visible{outline:4px solid white;outline-offset:2px}
+#gameGrid .newGame{background:#177d8f}
+.tileIllustration{position:absolute;top:38%;left:0;width:100%;height:62%;object-fit:cover;object-position:center 47%;display:block}
+.welcome{display:flex;justify-content:center;padding:14px 0 0}
+#offlineState{font-size:12px;padding:6px 12px;background:#054e66aa}
+#collectionHome{font-size:16px;margin:12px 0;line-height:1.4;text-align:center}
+.homeNav{position:static;margin:8px 0;padding:10px 4px max(10px,env(safe-area-inset-bottom));border:1px solid #c7974a;border-radius:16px;background:repeating-linear-gradient(0deg,#733d25 0 3px,#86482b 4px 11px,#7e4329 12px 18px);gap:5px}
+.homeNav .btn{min-height:48px;padding:10px 12px;font-size:13px;background:linear-gradient(#fff0b9,#e9be68);color:#233e4b;border:1px solid #f8e0a0}
+.installHelp{font-size:11px}
+/* A real HTML panel and controls with a decorative wooden trim; no UI image. */
+.panel:has(.tetrisGame),.panel:has(.orchestraGame){background:linear-gradient(150deg,#0e8195,#0a506e 65%,#08354d);border-color:#d8a75e;box-shadow:0 12px 35px #00172899,inset 0 0 0 4px #6d4029}
+.panel:has(.tetrisGame) header,.panel:has(.orchestraGame) header{padding:6px;border:2px solid #daab67;border-radius:12px;background:repeating-linear-gradient(0deg,#87482a,#a66033 6px,#8a4b2c 12px);color:#fff6dd;text-shadow:0 2px #492915}
+.panel:has(.tetrisGame) #play,.panel:has(.orchestraGame) #play{background:radial-gradient(ellipse at top,#59b19e,#2b8a89 60%,#1a6e83);border:2px solid #b6e1c0}
+.tetrisBoard{border:3px solid #bc8b51;box-shadow:0 0 0 3px #e9c48b,0 5px 15px #123b55aa;border-radius:10px}
+.tetrisSidebar{padding:8px;border:2px solid #d1ae72;border-radius:12px;background:#08364de8;color:#fff3ce}
+.tetrisSidebar>p:first-child{margin:2px 0 5px;font-weight:800}.tetrisSidebar canvas{border-radius:8px;background:#06283c}
+.tetrisSidebar progress{accent-color:#ffc14f}.tetrisControls .btn{border:2px solid #f9d69b;background:linear-gradient(#ffedb1,#eab963);box-shadow:0 4px #8a562c}
+.orchestraGame{position:relative;padding:5px;background:linear-gradient(145deg,#0c4654,#176972);border:2px solid #bd995b;border-radius:14px;color:#fff4dc}
+.orchestraGame h3{color:#ffe5a3;text-shadow:0 2px #164957}.orchestraGame .musicCanvas{border:3px solid #d8ac70;box-shadow:0 0 0 2px #715036}
+.orchestraGame .levelControls{flex-wrap:nowrap;gap:8px;margin:6px 0}
+.orchestraGame .levelControls .btn{font-size:13px;padding:9px 8px;margin:0;min-width:95px}
+.orchestraGame .levelControls label{font-size:12px;display:flex;align-items:center;gap:4px}
+.orchestraGame .levelControls input{width:80px;min-width:0}
+.orchestraGame>.btn{font-size:13px;padding:10px;margin:4px;min-height:48px}
+.musicPads{padding:10px 4px 7px;border:2px solid #d1a062;border-radius:14px;background:repeating-linear-gradient(90deg,#7d432a 0 32px,#975330 33px 65px)}
+.musicPads button{border-color:#fff1c1;border-radius:50%;background-image:linear-gradient(#fff6,#fff0 45%,#0002);box-shadow:0 5px #3f382d,inset 0 3px #fff8;text-shadow:0 1px #fff7}
+/* The art always fits: children, cat and sign are never clipped by a viewport. */
+#launchSplash::before{content:'';position:absolute;inset:0;background:url('../assets/splash.webp') center/cover;opacity:.28;filter:blur(12px)}
+.splashPanel{position:relative;width:min(100vw,calc(100dvh * .75),640px);max-height:100dvh;aspect-ratio:3/4;border-radius:20px;overflow:hidden;box-shadow:0 10px 60px #002d4777}
+#launchSplash .splashPanel>img{display:block;width:100%;height:100%;object-fit:contain}
+.splashCopy{position:absolute;left:8%;right:8%;bottom:3%;text-align:center;color:white;text-shadow:0 2px 3px #513519;font-weight:800;font-size:16px}
+.splashCopy p{margin:7px 0}.splashLoader{display:block;position:relative;overflow:hidden;width:170px;height:13px;border:2px solid #ffd173;border-radius:20px;background:#7f451d;margin:auto}
+.splashLoader::after{content:'';position:absolute;inset:0 auto 0 0;width:40%;border-radius:10px;background:linear-gradient(90deg,#2ee2d1,#30c1ff);animation:splashLoading 1s ease-in-out infinite alternate}
+@keyframes splashLoading{from{transform:translateX(-20%)}to{transform:translateX(170%)}}
+@media(min-width:375px){#gameGrid{grid-template-columns:repeat(3,minmax(0,1fr))}#gameGrid .illustratedHotspot{font-size:12px}}
+@media(min-width:700px){#gameGrid{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.heroBanner{border-radius:24px}#gameGrid .illustratedHotspot{font-size:16px;min-height:0}.homeNav .btn{font-size:15px}}
+@media(min-width:1100px){#gameGrid{grid-template-columns:repeat(6,minmax(0,1fr))}}
+@media(max-width:374px){#gameGrid .illustratedHotspot{min-height:110px}.tetrisSidebar{padding:5px}}
+@media(prefers-reduced-motion:reduce){.splashLoader::after{animation:none;transform:translateX(70%)}#gameGrid .illustratedHotspot:active{transform:none}}
